@@ -91,6 +91,7 @@ export class Game extends Node {
                     const sprite2 = temp[1].children[1];
                     sprite2.display();
                     if (sprite1.image === sprite2.image) {
+                        createScoreboard(1000);
                         setTimeout(() => {
                             temp.forEach(element => element.delete())
                             sprite1.hide();
@@ -101,10 +102,10 @@ export class Game extends Node {
                             console.log(this._correct);
                             canClick = true;
                             coin += 1000;
-                            createScoreboard(1000);
                         }, 500);
                     }
                     else {
+                        createScoreboard(-500);
                         setTimeout(() => {
                             temp.forEach((element) => element.children.forEach((element) => element.display()));
                             sprite1.hide();
@@ -114,7 +115,6 @@ export class Game extends Node {
                             this._correct = true;
                             canClick = true;
                             coin -= 500;
-                            createScoreboard(-500);
                         }, 500);
                     }
                 }

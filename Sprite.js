@@ -17,17 +17,15 @@ export class Sprite extends Node {
     setImage() {
         this.view.src = this.image;
     }
-
-
-    // display() {
-    //     if (this._active) {
-    //         this.view.style.display = "initial";
-    //     }
-    // }
-    // hide() {
-    //     if (this._active) {
-    //         this.view.style.display = "none";
-    //     }
-    // }
+    display() {
+        if (this._active) {
+            this.view.style.display = "initial";
+        }
+    }
+    hide() {
+        if (this._active) {
+            this.view.style.display = "none";
+        }
+    }
 
 }

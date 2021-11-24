@@ -51,8 +51,8 @@ export class Node {
     }
     delete() {
         this._active = false;
-        this.view.style.backgroundColor = "black";
-        this.view.style.display = "none";
+        // this.view.style.backgroundColor = "black";
+        // this.view.style.display = "none";
 
     }
 }

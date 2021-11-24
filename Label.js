@@ -8,8 +8,10 @@ export class Label extends Node {
         this.view.style.color = 'black';
         this.view.style.fontSize = "30px";
         this.view.style.cursor = "pointer";
-        this.x = 30;
-        this.y = 30;
+        this.view.style.textAlign = "center";
+        this.width = 100;
+        this.height = 100;
+        this.y = this.height / 2 - 15;
     }
 
     get string() {
@@ -20,14 +22,4 @@ export class Label extends Node {
         this._string = value;
         this.view.innerHTML = this._string;
     }
-    // display() {
-    //     if (this._active) {
-    //         this.view.style.display = "none";
-    //     }
-    // }
-    // hide() {
-    //     if (this._active) {
-    //         this.view.style.display = "initial";
-    //     }
-    // }
 }

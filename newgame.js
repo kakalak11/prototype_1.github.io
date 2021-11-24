@@ -5,7 +5,7 @@ import { Sprite } from "./Sprite.js";
 import { Game } from "./Game.js";
 
 var game = new Game();
-console.log(game);
+// console.log(game);
 
 // setTimeout(() => game.reset(), 2000);
 // setInterval(() => game.reset(), 2000);

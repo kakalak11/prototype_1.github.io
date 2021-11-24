@@ -20,10 +20,14 @@ export class Label extends Node {
         this._string = value;
         this.view.innerHTML = this._string;
     }
-    // open() {
-    //     this.view.style.display = "none";
+    // display() {
+    //     if (this._active) {
+    //         this.view.style.display = "none";
+    //     }
     // }
-    // close() {
-    //     this.view.style.display = "initial";
+    // hide() {
+    //     if (this._active) {
+    //         this.view.style.display = "initial";
+    //     }
     // }
 }

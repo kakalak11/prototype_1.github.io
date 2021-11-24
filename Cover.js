@@ -7,14 +7,4 @@ export class Cover extends Node {
         this.view.style.height = "88px";
         this.view.style.border = "2px solid black";
     }
-    // display() {
-    //     if (this._active) {
-    //         this.view.style.display = "initial";
-    //     }
-    // }
-    // hide() {
-    //     if (this._active) {
-    //         this.view.style.display = "none";
-    //     }
-    // }
 }

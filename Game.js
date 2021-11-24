@@ -53,7 +53,7 @@ export class Game extends Node {
                 node.view.addEventListener("click", _onClickFunction);
                 this.nodes.push(node)
                 document.body.appendChild(node.view);
-                // console.log(node);
+                console.log(node);
             }
         }
         createScoreboard(0);
@@ -67,66 +67,66 @@ export class Game extends Node {
             let cover = new Cover();
             let sprite = new Sprite(shuffledArray[index - 1]);
             let label = new Label();
-            label.hide();
-            setTimeout(() => label.display(), 3000);
-            sprite.display();
-            setTimeout(() => {
-                sprite.hide();
-                canClick = true;
-            }, 3000);
             label.string = index;
-
             node.addChild(cover);
             node.addChild(sprite);
             node.addChild(label);
+            node.children.forEach(element => element.display());
+            setTimeout(() => {
+                node.children.forEach(element => element.hide());
+                canClick = true;
+            }, 500);
+
         }
 
         function onClickFunction() {
             if (canClick) {
                 console.log("clicked", this);
                 temp.push(this);
+                console.log(this.active);
+                fadeOut(this);
+                // flipOpen(this);
+                // this.children.forEach(element => fadeOut(element));
                 const sprite1 = temp[0].children[1];
-                temp.forEach((element) => element.children.forEach((element) => element.hide()));
-                sprite1.display();
+                // this.children.forEach(element => element.display());
                 if (temp.length === 2) {
-                    if (temp[0].children[2] !== temp[1].children[2]) {
-                        canClick = false;
-                        const sprite2 = temp[1].children[1];
-                        sprite2.display();
-                        if (sprite1.image === sprite2.image) {
-                            coin += 1000;
-                            countWin++;
-                            setTimeout(() => {
-                                temp.forEach(element => element.delete())
-                                sprite1.hide();
-                                sprite2.hide();
-                                console.log("matched");
-                                temp = [];
-                                canClick = true;
+                    canClick = false;
+                    const sprite2 = temp[1].children[1];
+                    setTimeout(() => {
+                        if (temp[0].children[2] !== temp[1].children[2]) {
+                            canClick = false;
+                            if (sprite1.image === sprite2.image) {
+                                countWin++;
+                                coin += 1000;
+                                setTimeout(() => {
+                                    // temp.forEach(element => element.delete());
+                                    temp.forEach(element => fadeAway(element));
+                                    console.log("matched");
+                                    temp = [];
+                                    canClick = true;
+                                }, 1000);
                                 createScoreboard(1000);
-                            }, 500);
+                            }
+                            else {
+                                coin -= 500;
+                                setTimeout(() => {
+                                    // temp.forEach((element) => element.children.forEach((element) => element.hide()));
+                                    temp.forEach(element => fadeIn(element));
+                                    console.log("not matched");
+                                    temp = [];
+                                    canClick = true;
+                                }, 1000);
+                                createScoreboard(-500);
+                            }
                         }
                         else {
-                            console.log(coin);
-                            coin -= 500;
-                            console.log(coin);
-                            setTimeout(() => {
-                                temp.forEach((element) => element.children.forEach((element) => element.display()));
-                                sprite1.hide();
-                                sprite2.hide();
-                                console.log("not matched");
-                                temp = [];
-                                canClick = true;
-                                createScoreboard(-500);
-                            }, 500);
+                            console.log("same card, please choose again");
+                            temp.forEach((element) => element.children.forEach((element) => element.hide()));
+                            // sprite1.hide();
+                            // sprite2.hide();
+                            temp = [];
                         }
-                    }
-                    else {
-                        console.log("same card, please choose again");
-                        temp.forEach((element) => element.children.forEach((element) => element.display()));
-                        sprite1.hide();
-                        temp = [];
-                    }
+                    }, 1000);
                 }
             }
         }
@@ -134,6 +134,30 @@ export class Game extends Node {
         if (coin <= 0) {
             console.log(this.nodes);
             this.nodes.forEach(node => node.delete());
+        }
+
+        function fadeOut(element) {
+            console.log(element.view);
+            let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
+            tl.to(element.view, { scaleX: 0, duration: 1 });
+            tl.add(() => element.children.forEach(element => element.display()));
+            tl.to(element.view, { scaleX: 1, duration: 1 });
+        }
+
+        function fadeIn(element) {
+            console.log(element.view);
+            let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
+            tl.to(element.view, { scaleX: 0, duration: 1 });
+            tl.add(() => element.children.forEach(element => element.hide()));
+            tl.to(element.view, { scaleX: 1, duration: 1 });
+        }
+
+        function fadeAway(element) {
+            console.log(element.view);
+            let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
+            tl.to(element.view, { opacity: 0, duration: 1 });
+            tl.add(() => element.children.forEach(element => element.delete()));
+            // tl.to(element.view, { scaleX: 1, duration: 1 });
         }
 
         function createScoreboard(diff) {
@@ -170,7 +194,7 @@ export class Game extends Node {
                 }
                 if (coin <= 0) {
                     label.string = "GAME OVER !!!";
-                    gameWin();
+                    // gameWin();
                     // nodes.forEach(node => node.delete());
                     canClick = false;
                 }
@@ -200,6 +224,8 @@ export class Game extends Node {
                     setTimeout(() => change.view.style.visibility = "hidden", 500);
                 }
             }
+
+
             // function gameWin() {
             //     let cover = document.createElement("div");
             //     document.body.appendchild(cover);

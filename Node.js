@@ -8,6 +8,7 @@ export class Node {
         this.children = [];
         this.initView();
         this.view.style.position = "absolute";
+        this.view.style.opacity = this._opacity;
     }
     get x() {
         return this._x;
@@ -41,18 +42,17 @@ export class Node {
     }
     display() {
         if (this._active) {
-            this.view.style.display = "initial";
+            this.view.style.display = "none";
         }
     }
     hide() {
         if (this._active) {
-            this.view.style.display = "none";
+            this.view.style.display = "initial";
         }
     }
     delete() {
         this._active = false;
-        // this.view.style.backgroundColor = "black";
-        // this.view.style.display = "none";
-
+        this.view.style.display = "none";
+        this.view.style.backgroundColor = "black";
     }
 }

@@ -9,11 +9,11 @@ export class Sprite extends Node {
     initView() {
         this.view = document.createElement('img');
         this.view.style.width = "88px";
+        this.view.style.opacity = "1";
         this.view.style.height = "88px";
         this.view.style.border = "2px solid black";
-        // this.view.style.display = "none";
+        this.view.style.display = "none";
     }
-
     setImage() {
         this.view.src = this.image;
     }

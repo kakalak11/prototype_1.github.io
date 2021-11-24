@@ -5,6 +5,7 @@ export class Node {
         this._width = 0;
         this._height = 0;
         this._active = true;
+        // this._index = index;
         this.children = [];
         this.initView();
         this.view.style.position = "absolute";
@@ -69,25 +70,25 @@ export class Node {
         this.view.style.display = "none";
         // this.view.style.backgroundColor = "black";
     }
-    flipOpen(node) {
-        console.log(node.view);
+    flipOpen() {
+        console.log(this.view);
         let tl = gsap.timeline({repeat: 0, repeatDelay: 0});
-        tl.to(node.view, {opacity: 0, duration: 1});
-        tl.add(() => node.children.forEach(element => element.display()));
-        tl.to(node.view, {opacity: 1, duration: 1});
+        tl.to(this.view, {opacity: 0, duration: 0.5});
+        tl.add(() => this.children.forEach(element => element.display()));
+        tl.to(this.view, {opacity: 1, duration: 0.5});
     }
-    flipClose(node) {
-        console.log(node.view);
+    flipClose() {
+        console.log(this.view);
         let tl = gsap.timeline({repeat: 0, repeatDelay: 0});
-        tl.to(node.view, {opacity: 0, duration: 1});
-        tl.add(() => node.children.forEach(element => element.hide()));
-        tl.to(node.view, {opacity: 1, duration: 1});
+        tl.to(this.view, {opacity: 0, duration: 0.5});
+        tl.add(() => this.children.forEach(element => element.hide()));
+        tl.to(this.view, {opacity: 1, duration: 0.5});
     }
     flipAway() {
-        console.log(node.view);
+        console.log(this.view);
         let tl = gsap.timeline({repeat: 0, repeatDelay: 0});
-        tl.to(node.view, {opacity: 0, duration: 1});
-        tl.add(() => node.children.forEach(element => element.delete()));
-        tl.to(node.view, {opacity: 1, duration: 1});
+        tl.to(this.view, {opacity: 0, duration: 0.5});
+        tl.add(() => this.children.forEach(element => element.delete()));
+        tl.to(this.view, {opacity: 1, duration: 0.5});
     }
 }

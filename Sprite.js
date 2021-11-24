@@ -8,9 +8,8 @@ export class Sprite extends Node {
     }
     initView() {
         this.view = document.createElement('img');
-        this.view.style.width = "88px";
-        this.view.style.opacity = "1";
-        this.view.style.height = "88px";
+        this.view.width = 98;
+        this.view.height = 98;
         this.view.style.border = "2px solid black";
         this.view.style.display = "none";
     }

@@ -101,6 +101,9 @@ export class Manager extends Node {
                                     canClick = true;
                                 }, 500);
                                 update(board, coin, 1000);
+                                if (countWin > 9) {
+                                    alert("you win");
+                                }
                             }
                             else {
                                 coin -= 500;
@@ -139,6 +142,10 @@ export class Manager extends Node {
             else if (value === -500) {
                 change.string = "-" + 500;
                 flashChange();
+            }
+
+            if (coin <= 0) {
+                alert("you lose");
             }
 
             function flashChange() {

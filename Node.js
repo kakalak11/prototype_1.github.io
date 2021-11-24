@@ -37,9 +37,6 @@ export class Node {
         this.children.push(node);
         this.view.appendChild(node.view);
     }
-    pushChild(index) {
-        this.children.push(index);
-    }
     display() {
         if (this._active) {
             this.view.style.display = "none";
@@ -53,6 +50,6 @@ export class Node {
     delete() {
         this._active = false;
         this.view.style.display = "none";
-        this.view.style.backgroundColor = "black";
+        // this.view.style.backgroundColor = "black";
     }
 }

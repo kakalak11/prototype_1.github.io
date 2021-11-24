@@ -6,17 +6,19 @@ import { Sprite } from "./Sprite.js";
 export class Game extends Node {
     constructor() {
         super();
-        this.nodes = [];
-        this.startGame();
-        this._correct;
+        // this.createReplayButton();
+        // this.startGame();
+        // this.setup();
     }
     get check() {
         value = this._correct;
         this._correct = false;
         return value;
     }
+
+
     startGame() {
-        // let nodes = this.nodes;
+        let nodes = [];
         let countWin = 0;
         let coin = 1000;
         let index = 0;
@@ -51,11 +53,13 @@ export class Game extends Node {
                 setElement(node);
                 let _onClickFunction = onClickFunction.bind(node);
                 node.view.addEventListener("click", _onClickFunction);
-                this.nodes.push(node)
+                // console.log(nodes);
+                nodes.push(node)
                 document.body.appendChild(node.view);
-                console.log(node);
+                // console.log(nodes);
             }
         }
+        // this.createReplayButton();
         createScoreboard(0);
         function setPosition(node, x_pos, y_pos) {
             // console.log(this.node.view);
@@ -85,10 +89,7 @@ export class Game extends Node {
                 temp.push(this);
                 console.log(this.active);
                 fadeOut(this);
-                // flipOpen(this);
-                // this.children.forEach(element => fadeOut(element));
                 const sprite1 = temp[0].children[1];
-                // this.children.forEach(element => element.display());
                 if (temp.length === 2) {
                     canClick = false;
                     const sprite2 = temp[1].children[1];
@@ -110,7 +111,6 @@ export class Game extends Node {
                             else {
                                 coin -= 500;
                                 setTimeout(() => {
-                                    // temp.forEach((element) => element.children.forEach((element) => element.hide()));
                                     temp.forEach(element => fadeIn(element));
                                     console.log("not matched");
                                     temp = [];
@@ -122,18 +122,13 @@ export class Game extends Node {
                         else {
                             console.log("same card, please choose again");
                             temp.forEach((element) => element.children.forEach((element) => element.hide()));
-                            // sprite1.hide();
-                            // sprite2.hide();
+                            canClick = true;
+
                             temp = [];
                         }
                     }, 1000);
                 }
             }
-        }
-
-        if (coin <= 0) {
-            console.log(this.nodes);
-            this.nodes.forEach(node => node.delete());
         }
 
         function fadeOut(element) {
@@ -194,6 +189,8 @@ export class Game extends Node {
                 }
                 if (coin <= 0) {
                     label.string = "GAME OVER !!!";
+                    nodes.forEach(node => node.children.forEach(element => element.delete()));
+                    // retry();
                     // gameWin();
                     // nodes.forEach(node => node.delete());
                     canClick = false;
@@ -224,19 +221,34 @@ export class Game extends Node {
                     setTimeout(() => change.view.style.visibility = "hidden", 500);
                 }
             }
-
-
-            // function gameWin() {
-            //     let cover = document.createElement("div");
-            //     document.body.appendchild(cover);
-            //     cover.style.backgroundImage = "./gamewin.jpeg";
-            //     cover.style.width = "360px";
-            //     cover.style.height = "450px";
-            // }
         }
     }
     reset() {
-        this.startGame();
-        this.nodes = [];
+        let game = Game();
+        game.startGame();
+    }
+    createReplayButton() {
+        let node = new Node();
+        document.body.appendChild(node.view)
+        let button = new Label();
+        node.addChild(button);
+        button.string = "REPLAY";
+        button.view.style.color = "black";
+        button.view.style.border = "2px solid black"
+        node.y = 450;
+        node.x = 0;
+        button.view.addEventListener("click", this.reset);
+    }
+    setup() {
+        let node = new Node();
+        document.body.appendChild(node.view)
+        let button = new Label();
+        node.addChild(button);
+        button.string = "REPLAY";
+        button.view.style.color = "white";
+        button.view.style.border = "2px solid white";
+        node.y = 360;
+        node.x = 300;
+        button.view.addEventListener("click", this.startGame);
     }
 }

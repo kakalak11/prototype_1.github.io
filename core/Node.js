@@ -69,24 +69,28 @@ export class Node {
         // this.view.style.backgroundColor = "black";
     }
     flipOpen() {
-        console.log(this.view);
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
         tl.to(this.view, { opacity: 0, duration: 0.5 });
         tl.add(() => this.children.forEach(element => element.display()));
         tl.to(this.view, { opacity: 1, duration: 0.5 });
     }
     flipClose() {
-        console.log(this.view);
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
         tl.to(this.view, { opacity: 0, duration: 0.5 });
         tl.add(() => this.children.forEach(element => element.hide()));
         tl.to(this.view, { opacity: 1, duration: 0.5 });
+        tl.delay(0.5);
+
     }
     flipAway() {
-        console.log(this.view);
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
         tl.to(this.view, { opacity: 0, duration: 0.5 });
         tl.add(() => this.children.forEach(element => element.delete()));
         tl.to(this.view, { opacity: 1, duration: 0.5 });
+        tl.delay(0.5);
+    }
+    spreadDeck() {
+        let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
+        tl.to(this.view, { x: this.x, y: this.y, duration: 2 });
     }
 }

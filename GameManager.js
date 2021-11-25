@@ -6,18 +6,23 @@ import { Sprite } from "./core/Sprite.js";
 export class Manager extends Node {
     constructor(deck) {
         super();
-        this.coin = null;
+        this.started = null;
+        this.coin = 10000;
         this.collum = 5;
         this.row = 4;
         this.canClick = true;
         this.deck = deck;
         this.firstCard = null;
         this.secondCard = null;
+        this.board = this._createScoreBoard(this.coin);
         this.temp = [];
-        this.setup();
+        this.setup(this.coin);
     }
-    setup() {
-        this.coin = 10000;
+    setup(coin) {
+        if (this.started) {
+            console.log("game started");
+        }
+        this.started = true;
         let index = 0;
         let array = ["./Images/circle.png",
             "./Images/diamond.png",
@@ -50,22 +55,21 @@ export class Manager extends Node {
             }
         }
         function addCardElement(card, index) {
-            let sprite = new Sprite(shuffledArray[index]);
-            card.addChild(sprite);
             let cover = new Cover();
             card.addChild(cover);
             let label = new Label(Math.floor((card.x) / (90) + 1 + (card.y) / (20)));
             cover.addChild(label);
+            let sprite = new Sprite(shuffledArray[index]);
+            card.addChild(sprite);
         }
         function setPosition(card, x_pos, y_pos) {
             card.x = x_pos * 100;
             card.y = y_pos * 100;
         }
-        this._newStartGame();
-        this._createScoreBoard(this.coin);
+        this._newStartGame(coin);
     }
 
-    _newStartGame() {
+    _newStartGame(coin) {
         console.log(this);
         this.deck.children.forEach(element => {
             let _onClickCard = onClickCard.bind(element, this);
@@ -73,7 +77,6 @@ export class Manager extends Node {
         });
 
         function onClickCard(game) {
-            console.log(this);
             if (!game.canClick) return null;
             if (!game.firstCard) {
                 game.firstCard = this;
@@ -81,35 +84,49 @@ export class Manager extends Node {
                 return null;
             }
             if (game.firstCard === this) {
+                game.firstCard.flipClose();
+                game.firstCard = null;
                 console.log("same card");
-                return null
+                return null;
             }
             game.secondCard = this;
+            game.canClick = false;
             this.flipOpen();
-
-            if (game.firstCard.children[0].image === game.secondCard.children[0].image) {
-                cardMatch(game.firstCard, game.secondCard);
-                game.secondCard = null;
-                game.firstCard = null;
-                return null;
-            } else {
-                cardMiss(game.firstCard, game.secondCard);
-                game.secondCard = null;
-                game.firstCard = null;
-                return null;
-            }
+            setTimeout(() => {
+                if (game.firstCard.children[1].image === game.secondCard.children[1].image) {
+                    cardMatch(game.firstCard, game.secondCard);
+                    game.secondCard = null;
+                    game.firstCard = null;
+                    return null;
+                } else {
+                    cardMiss(game.firstCard, game.secondCard);
+                    game.secondCard = null;
+                    game.firstCard = null;
+                    return null;
+                }
+            },500);
+            setTimeout(() => game.canClick = true, 1000);
         }
 
         function cardMatch(firstCard, secondCard) {
+            console.log("match");
             firstCard.flipAway();
             secondCard.flipAway();
+            coin += 1000;
+            update(1000, coin);
         }
         function cardMiss(firstCard, secondCard) {
             firstCard.flipClose();
             secondCard.flipClose();
+            coin -= 500;
+            update(-500, coin);
         }
+
+        let update = (diff, coin) => this._update(diff, coin);
+
     }
     _createScoreBoard(coin) {
+        console.log(coin);
         let board = new Board();
         let score = new Score(coin);
         this.deck.addChild(board)
@@ -130,6 +147,40 @@ export class Manager extends Node {
             score.y = 20;
             score.view.style.fontSize = "60px";
             return score;
+        }
+
+        return board;
+    }
+    _update(diff, coin) {
+
+        if (!this.change) {
+            this.change = new Change();
+        }
+        this.board.addChild(this.change);
+
+        if (diff === -500) {
+            this.board.children[0].string = coin;
+            this.change.string = diff;
+            flashChange(this.change);
+        }
+
+        if (diff === 1000) {
+            this.board.children[0].string = coin;
+            this.change.string = diff;
+            flashChange(this.change);
+        }
+
+        function Change() {
+            let change = new Label();
+            change.y = 20;
+            change.x = 200;
+            change.view.style.fontSize = "60px";
+            return change;
+        }
+
+        function flashChange(change) {
+            change.view.style.visibility = "visible";
+            setTimeout(() => change.view.style.visibility = "hidden", 500);
         }
     }
 }

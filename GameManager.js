@@ -4,22 +4,20 @@ import { Node } from "./core/Node.js";
 import { Sprite } from "./core/Sprite.js";
 
 export class Manager extends Node {
-    constructor() {
+    constructor(deck) {
         super();
         this.coin = 10000;
         this.collum = 5;
         this.row = 4;
         this.canClick = true;
-        // this.createDeck();
-    }
-    createDeck(deck) {
         this.deck = deck;
-        console.log(this.deck);
-        document.body.appendChild(this.deck.view);
-        this.deck.x = 100;
-        this.deck.y = 100;
-        // this.deck.view.style.display = "none";
-        let index = 0
+        this.firstCard = null;
+        this.secondCard = null;
+        this.temp = [];
+        this.setup();
+    }
+    setup() {
+        let index = 0;
         let array = ["./Images/circle.png",
             "./Images/diamond.png",
             "./Images/halfsquare.png",
@@ -45,90 +43,27 @@ export class Manager extends Node {
             for (let x = 0; x < this.collum; x++) {
                 let card = new Node();
                 setPosition(card, x, y);
-                addElement(card, index);
-                // let _onClickCard = this.onClickCard.bind(card)
-                // card.view.addEventListener("click",_onClickCard);
+                addCardElement(card, index);
                 this.deck.addChild(card);
                 index++;
             }
         }
-        function addElement(card, index) {
+        function addCardElement(card, index) {
             let sprite = new Sprite(shuffledArray[index]);
             card.addChild(sprite);
             let cover = new Cover();
             card.addChild(cover);
             let label = new Label(Math.floor((card.x) / (90) + 1 + (card.y) / (20)));
-            card.addChild(label);
+            cover.addChild(label);
         }
         function setPosition(card, x_pos, y_pos) {
             card.x = x_pos * 100;
             card.y = y_pos * 100;
         }
-        this.startGame();
+        this._newStartGame();
+        this._createScoreBoard();
     }
     startGame() {
-        console.log(this.coin);
-        let board = new createScoreBoard(this.deck);
-        let countWin = 0;
-        let temp = [];
-        let canClick = true;
-        let coin = this.coin;
-        this.deck.children.forEach(element => {
-            let _onClickCard = onClickCard.bind(element);
-            element.view.addEventListener("click", _onClickCard);
-        });
-        function onClickCard() {
-            if (canClick) {
-                console.log("clicked", this);
-                temp.push(this);
-                this.flipOpen();
-                console.log(temp);
-                if (temp.length === 2) {
-                    canClick = false;
-                    console.log(temp[0] !== temp[1]);
-                    setTimeout(() => {
-                        if (temp[0] !== temp[1]) {
-                            canClick = false;
-                            console.log("different card");
-                            if (temp[0].children[0].image === temp[1].children[0].image) {
-                                countWin++;
-                                coin += 1000;
-                                setTimeout(() => {
-                                    // temp.forEach(element => element.delete());
-                                    temp.forEach(element => element.flipAway());
-                                    console.log("matched");
-                                    temp = [];
-                                    canClick = true;
-                                }, 500);
-                                update(board, coin, 1000);
-                                if (countWin > 9) {
-                                    alert("you win");
-                                }
-                            }
-                            else {
-                                coin -= 500;
-                                setTimeout(() => {
-                                    temp.forEach(element => element.flipClose());
-                                    console.log("not matched");
-                                    temp = [];
-                                    canClick = true;
-                                }, 500);
-                                console.log(board);
-                                update(board, coin, -500);
-                            }
-                        }
-                        else {
-                            console.log("same card, please choose again");
-                            temp.forEach((element) => element.flipClose());
-                            canClick = true;
-
-                            temp = [];
-                        }
-                    }, 500);
-                }
-            }
-        }
-
         function update(board, coin, value) {
             board.children[0].string = coin + value;
 
@@ -162,7 +97,7 @@ export class Manager extends Node {
             }
         }
 
-        function createScoreBoard(deck) {
+        function Board(deck) {
             let board = new Board();
             let label = new setLabel();
             board.addChild(label);
@@ -171,7 +106,7 @@ export class Manager extends Node {
                 console.log(deck);
                 let board = new Node();
                 deck.addChild(board);
-                board.y = 100 * 4 + 20;
+                board.y = 100 * 4;
                 board.width = 502;
                 board.height = 100;
                 board.view.style.backgroundColor = "black";
@@ -190,5 +125,38 @@ export class Manager extends Node {
         }
 
 
+    }
+
+    _newStartGame() {
+        this.deck.children.forEach((element, index) => {
+            let _onClickCard = onClickCard.bind(element, this.canClick);
+            element.view.addEventListener("click", _onClickCard);
+        });
+
+        function onClickCard(canClick) {
+            console.log(this);
+            let firstCard = null;
+            if (!canClick) return null;
+            if (!firstCard) {
+                firstCard = 
+                return null;
+            }
+            this.secondCard = this;
+            console.log(this.secondCard);
+
+        }
+    }
+    _createScoreBoard() {
+        let board = new Board();
+        this.deck.addChild(board)
+
+        function Board() {
+            let scoreBoard = new Node();
+            scoreBoard.height = 100;
+            scoreBoard.width = 500;
+            scoreBoard.y = 400;
+
+            return scoreBoard;
+        }
     }
 }

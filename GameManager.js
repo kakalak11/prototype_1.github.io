@@ -57,14 +57,15 @@ export class Manager extends Node {
         function addCardElement(card, index) {
             let cover = new Cover();
             card.addChild(cover);
-            let label = new Label(Math.floor((card.x) / (90) + 1 + (card.y) / (20)));
+            let label = new Label(Math.floor(index+1));
             cover.addChild(label);
             let sprite = new Sprite(shuffledArray[index]);
             card.addChild(sprite);
         }
         function setPosition(card, x_pos, y_pos) {
-            card.x = x_pos * 100;
-            card.y = y_pos * 100;
+            // card.x = x_pos * 100;
+            // card.y = y_pos * 100;
+            card.spreadDeck(x_pos * 100,y_pos * 100);
         }
         this._newStartGame(coin);
     }

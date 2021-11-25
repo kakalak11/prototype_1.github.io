@@ -89,8 +89,9 @@ export class Node {
         tl.to(this.view, { opacity: 1, duration: 0.5 });
         tl.delay(0.5);
     }
-    spreadDeck() {
+    spreadDeck(x,y) {
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
-        tl.to(this.view, { x: this.x, y: this.y, duration: 2 });
+        tl.to(this.view, { x: x, y: y, duration: 2 });
+        tl.delay(1);
     }
 }

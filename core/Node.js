@@ -5,11 +5,9 @@ export class Node {
         this._width = 0;
         this._height = 0;
         this._active = true;
-        // this._index = index;
         this.children = [];
         this.initView();
         this.view.style.position = "absolute";
-        this.view.style.opacity = this._opacity;
     }
     get x() {
         return this._x;

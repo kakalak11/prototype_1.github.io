@@ -1,7 +1,7 @@
-import { Cover } from "./Cover.js";
-import { Label } from "./Label.js";
-import { Node } from "./Node.js";
-import { Sprite } from "./Sprite.js";
+import { Cover } from "./core/Cover.js";
+import { Label } from "./core/Label.js";
+import { Node } from "./core/Node.js";
+import { Sprite } from "./core/Sprite.js";
 
 export class Manager extends Node {
     constructor() {
@@ -21,48 +21,48 @@ export class Manager extends Node {
         // this.deck.view.style.display = "none";
         let index = 0
         let array = ["./Images/circle.png",
-        "./Images/diamond.png",
-        "./Images/halfsquare.png",
-        "./Images/heart.png",
-        "./Images/rectangle.png",
-        "./Images/shape.png",
-        "./Images/sixstar.png",
-        "./Images/square.png",
-        "./Images/star.png",
-        "./Images/triangle.png",
-        "./Images/triangle.png",
-        "./Images/circle.png",
-        "./Images/diamond.png",
-        "./Images/halfsquare.png",
-        "./Images/heart.png",
-        "./Images/rectangle.png",
-        "./Images/shape.png",
-        "./Images/sixstar.png",
-        "./Images/square.png",
-        "./Images/star.png"];
+            "./Images/diamond.png",
+            "./Images/halfsquare.png",
+            "./Images/heart.png",
+            "./Images/rectangle.png",
+            "./Images/shape.png",
+            "./Images/sixstar.png",
+            "./Images/square.png",
+            "./Images/star.png",
+            "./Images/triangle.png",
+            "./Images/triangle.png",
+            "./Images/circle.png",
+            "./Images/diamond.png",
+            "./Images/halfsquare.png",
+            "./Images/heart.png",
+            "./Images/rectangle.png",
+            "./Images/shape.png",
+            "./Images/sixstar.png",
+            "./Images/square.png",
+            "./Images/star.png"];
         const shuffledArray = array.sort((a, b) => 0.5 - Math.random());
         for (let y = 0; y < this.row; y++) {
             for (let x = 0; x < this.collum; x++) {
                 let card = new Node();
-                setPosition(card,x,y);
-                addElement(card,index);
+                setPosition(card, x, y);
+                addElement(card, index);
                 // let _onClickCard = this.onClickCard.bind(card)
                 // card.view.addEventListener("click",_onClickCard);
                 this.deck.addChild(card);
                 index++;
             }
         }
-        function addElement(card,index) {
+        function addElement(card, index) {
             let sprite = new Sprite(shuffledArray[index]);
             card.addChild(sprite);
             let cover = new Cover();
             card.addChild(cover);
-            let label = new Label(Math.floor((card.x)/(90) + 1 + (card.y)/(20)));
+            let label = new Label(Math.floor((card.x) / (90) + 1 + (card.y) / (20)));
             card.addChild(label);
         }
         function setPosition(card, x_pos, y_pos) {
-            card.x = x_pos*100;
-            card.y = y_pos*100;
+            card.x = x_pos * 100;
+            card.y = y_pos * 100;
         }
         this.startGame();
     }
@@ -121,7 +121,7 @@ export class Manager extends Node {
                             console.log("same card, please choose again");
                             temp.forEach((element) => element.flipClose());
                             canClick = true;
-    
+
                             temp = [];
                         }
                     }, 500);
@@ -171,7 +171,7 @@ export class Manager extends Node {
                 console.log(deck);
                 let board = new Node();
                 deck.addChild(board);
-                board.y = 100*4 + 20;
+                board.y = 100 * 4 + 20;
                 board.width = 502;
                 board.height = 100;
                 board.view.style.backgroundColor = "black";
@@ -189,6 +189,6 @@ export class Manager extends Node {
             return board;
         }
 
-    
+
     }
 }

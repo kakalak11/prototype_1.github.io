@@ -1,11 +1,12 @@
-import { Node } from "./Node.js";
-import { Label } from "./Label.js";
-import { Game } from "./Game.js";
+import { Node } from "./core/Node.js";
+import { Label } from "./core/Label.js";
 import { Manager } from "./GameManager.js";
+import { Sprite } from "./core/Sprite.js";
 
 function createMenu() {
     let manager = new Manager();
     let menu = new Menu();
+    let background = new Background();
     document.body.appendChild(menu.view);
     let startButton = new Start();
     let _onClickStart = onClickStart.bind(manager);
@@ -13,10 +14,11 @@ function createMenu() {
     let resetButton = new Reset();
     let _onClickReset = onClickReset.bind(manager);
     resetButton.view.addEventListener("click", _onClickReset);
-    
+
     menu.addChild(startButton);
     menu.addChild(resetButton);
-    
+    menu.addChild(background);
+
     function Menu() {
         let menu = new Node();
         menu.view.style.backgroundColor = "black";
@@ -26,7 +28,7 @@ function createMenu() {
         menu.height = 100;
         return menu;
     }
-    
+
     function Start() {
         let startButton = new Label("START");
         startButton.y = 30;
@@ -35,7 +37,7 @@ function createMenu() {
         startButton.view.style.border = "2px solid white";
         return startButton;
     }
-    
+
     function Reset() {
         let resetButton = new Label("RESET");
         resetButton.y = 30;
@@ -43,6 +45,13 @@ function createMenu() {
         resetButton.height = 30;
         resetButton.view.style.border = "2px solid white";
         return resetButton;
+    }
+
+    function Background() {
+        let background = new Node();
+        let sprite = new Sprite();
+        sprite.setImage("./BG.jpg");
+        return background;
     }
 }
 

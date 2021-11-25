@@ -4,7 +4,15 @@ export class Sprite extends Node {
     constructor(image) {
         super();
         this.image = image;
+        this._image = this.image
         this.setImage();
+    }
+    get image() {
+        return this._image;
+    }
+    set image(value) {
+        this._image = value;
+        return null;
     }
     initView() {
         this.view = document.createElement('img');
@@ -14,7 +22,7 @@ export class Sprite extends Node {
         this.view.style.display = "none";
     }
     setImage() {
-        this.view.src = this.image;
+        this.view.src = this._image;
     }
     display() {
         if (this._active) {

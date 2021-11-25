@@ -73,6 +73,7 @@ function createWindow() {
         background.view.style.display = "initial";
         background.width = width;
         background.height = height;
+        background.view.style.border = "none";
         return background;
     }
 

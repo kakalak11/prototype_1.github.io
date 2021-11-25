@@ -8,7 +8,6 @@ export class Node {
         this.children = [];
         this.initView();
         this.view.style.position = "absolute";
-        this.view.style.opacity = this._opacity;
     }
     get x() {
         return this._x;

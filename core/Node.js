@@ -78,9 +78,9 @@ export class Node {
     }
     flipAway() {
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
-        tl.to(this.view, { scaleX: 0, duration: 0.5, transformOrigin: '50px 50px' });
+        tl.to(this.view, { opacity: 0, duration: 0.5 });
         tl.add(() => this.children.forEach(element => element.delete()));
-        tl.to(this.view, { scaleX: 1, duration: 0.5, transformOrigin: '50px 50px' });
+        // tl.to(this.view, { opacity: 1, duration: 0.5, transformOrigin: '50px 50px' });
         tl.delay(0.5);
     }
     spreadDeck(x, y) {

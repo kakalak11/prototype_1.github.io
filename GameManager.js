@@ -152,14 +152,16 @@ export class Manager extends Node {
         let board = new Board();
         let score = new Score("Score: " + coin);
         console.log(this.deck);
-        this.deck.addChild(board)
+        // this.deck.addChild(board);
+        document.body.appendChild(board.view);
         board.addChild(score);
 
         function Board() {
             let scoreBoard = new Node();
             scoreBoard.height = 100;
             scoreBoard.width = 502;
-            scoreBoard.y = 400;
+            scoreBoard.y = 510;
+            scoreBoard.x = 110;
             scoreBoard.view.style.backgroundColor = "black";
             return scoreBoard;
         }
@@ -199,17 +201,24 @@ export class Manager extends Node {
         }
 
         if (coin <= 0) {
-            console.log(this.deck);
             loseSound.play();
-            loseSound.loop = true;
             this.deck.flipAway();
-            console.log("lose");
             setTimeout(() => {
-                this.board.view.style.display = "initial";
+                // this.board.view.style.display = "initial";
+                fadeUp(this.board.view);
                 this.board.children[0].string = "GAME OVER !!!";
 
                 let winBoard = new Board(coin);
                 this.board.addChild(winBoard);
+
+                function fadeUp(board) {
+                    let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
+                    tl.to(board, { opacity: 0, duration: 0 });
+                    tl.add(() => {
+                        board.style.display = "initial";
+                    })
+                    tl.to(board, { opacity: 1, duration: 2 });
+                }
 
                 function Board(coin) {
                     let winBoard = new Label();
@@ -230,19 +239,29 @@ export class Manager extends Node {
                     }
                     return winBoard;
                 }
-            }, 1000);
+            }, 500);
         }
 
         if (win > 9) {
             this.deck.flipAway();
             setTimeout(() => {
                 winSound.play();
-                this.board.view.style.display = "initial";
+                // this.board.view.style.display = "initial";
+                fadeUp(this.board.view);
                 this.board.children[0].string = "YOUR SCORE: " + coin + "!!!";
                 this.board.children[0].view.style.fontSize = "45px";
 
                 let winBoard = new Board(coin);
                 this.board.addChild(winBoard);
+
+                function fadeUp(board) {
+                    let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
+                    tl.to(board, { opacity: 0, duration: 0 });
+                    tl.add(() => {
+                        board.style.display = "initial";
+                    })
+                    tl.to(board, { opacity: 1, duration: 2 });
+                }
 
                 function Board(coin) {
                     let winBoard = new Label();

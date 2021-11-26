@@ -269,7 +269,7 @@ export class Manager extends Node {
         function Change() {
             let change = new Label();
             change.y = 20;
-            change.x = 325;
+            change.x = 375;
             change.view.style.fontSize = "60px";
             return change;
         }

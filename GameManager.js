@@ -10,21 +10,15 @@ export class Manager extends Node {
         this.coin = 1000;
         this.collum = 5;
         this.row = 4;
-        this.canClick = true || this._canClick;
         this.deck = deck;
         this.firstCard = null;
         this.secondCard = null;
         this.temp = [];
-    }
-
-    set canClick(value) {
-        this._canClick = value;
+        this.canClick = true;
     }
 
     setup() {
-        if (this.started) {
-            console.log("game started");
-        }
+        console.log(this.canClick);
         let index = 0;
         let array = ["./Images/circle.png",
             "./Images/diamond.png",
@@ -47,15 +41,17 @@ export class Manager extends Node {
             "./Images/square.png",
             "./Images/star.png"];
         const shuffledArray = array.sort((a, b) => 0.5 - Math.random());
+        this.canClick = false;
         for (let y = 0; y < this.row; y++) {
             for (let x = 0; x < this.collum; x++) {
                 let card = new Node();
                 setPosition(card, x, y, this.deck, index);
                 addCardElement(card, index);
-                // this.deck.addChild(card);
+                this.deck.addChild(card);
                 index++;
             }
         }
+        setTimeout(() => this.canClick = true, 2500);
         function addCardElement(card, index) {
             let cover = new Cover();
             card.addChild(cover);
@@ -65,17 +61,17 @@ export class Manager extends Node {
             card.addChild(sprite);
         }
         function setPosition(card, x_pos, y_pos, deck, delayStep) {
-            deck.addChild(card)
             // card.x = x_pos * 100;
             // card.y = y_pos * 100;
             // card.spreadDeck(x_pos * 100, y_pos * 100);
 
-            spread(card, x_pos * 100, y_pos * 100);
+            spread(card, x_pos * 100, y_pos * 100, delayStep);
 
-            function spread(card, x, y) {
+            function spread(card, x, y, delayStep) {
                 let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
-                tl.to(card.view, 1, { x: x, y: y, duration: 0.1 });
-                tl.delay(0.5 + delayStep * 0.5);
+                tl.to(card.view, { x: 200, y: 150, duration: 0 });
+                tl.to(card.view, { ease: Back.easeOut.config(3), x: x, y: y, duration: 0.5 });
+                tl.delay(0.5 + delayStep * 0.1);
             }
         }
         this._newStartGame(this.coin);
@@ -87,12 +83,15 @@ export class Manager extends Node {
     }
 
     _newStartGame(coin) {
+        console.log(this);
         this.deck.children.forEach(element => {
             let _onClickCard = onClickCard.bind(element, this);
             element.view.addEventListener("click", _onClickCard);
         });
-        let countWin = 9;
+        let countWin = 10;
         function onClickCard(game) {
+            console.log(game);
+            console.log(game.canClick);
             if (!game.canClick) return null;
             if (!game.firstCard) {
                 game.firstCard = this;
@@ -126,10 +125,10 @@ export class Manager extends Node {
         }
 
         function cardMatch(firstCard, secondCard, win) {
-            console.log("match");
             firstCard.flipAway();
             secondCard.flipAway();
             coin += 1000;
+            console.log(win);
             update(1000, coin, win);
         }
         function cardMiss(firstCard, secondCard) {
@@ -143,7 +142,7 @@ export class Manager extends Node {
     }
     _createScoreBoard(coin) {
         let board = new Board();
-        let score = new Score(coin);
+        let score = new Score("Score: " + coin);
         console.log(this.deck);
         this.deck.addChild(board)
         board.addChild(score);
@@ -178,13 +177,13 @@ export class Manager extends Node {
         this.board.addChild(this.change);
 
         if (diff === -500) {
-            this.board.children[0].string = coin;
+            this.board.children[0].string = "Score: " + coin;
             this.change.string = diff;
             flashChange(this.change);
         }
 
         if (diff === 1000) {
-            this.board.children[0].string = coin;
+            this.board.children[0].string = "Score: " + coin;
             this.change.string = "+" + diff;
             flashChange(this.change);
         }
@@ -194,22 +193,68 @@ export class Manager extends Node {
             setTimeout(() => {
                 this.board.view.style.display = "initial";
                 this.board.children[0].string = "GAME OVER !!!";
+
+                let winBoard = new Board(coin);
+                this.board.addChild(winBoard);
+
+                function Board(coin) {
+                    let winBoard = new Label();
+                    let image = new Img("./fail.gif");
+                    winBoard.addChild(image)
+                    // winBoard.view.style.backgroundColor = "black";
+                    winBoard.x = -45;
+                    winBoard.y = -300;
+                    // winBoard.string = coin + "/n";
+
+                    function Img(image) {
+                        let winImage = new Sprite(image);
+                        winImage.view.style.display = "initial";
+                        winImage.view.style.border = "none";
+                        winImage.width = 500;
+                        winImage.height = 250;
+                        return winImage;
+                    }
+                    return winBoard;
+                }
             }, 1000);
         }
-        console.log(win);
 
         if (win > 9) {
             this.deck.flipAway();
             setTimeout(() => {
                 this.board.view.style.display = "initial";
-                this.board.children[0].string = "GAME WIN !!!";
+                this.board.children[0].string = "YOUR SCORE: " + coin + "!!!";
+                this.board.children[0].view.style.fontSize = "45px";
+
+                let winBoard = new Board(coin);
+                this.board.addChild(winBoard);
+
+                function Board(coin) {
+                    let winBoard = new Label();
+                    let image = new Img("./win.gif");
+                    winBoard.addChild(image)
+                    // winBoard.view.style.backgroundColor = "black";
+                    winBoard.x = -45;
+                    winBoard.y = -300;
+                    // winBoard.string = coin + "/n";
+
+                    function Img(image) {
+                        let winImage = new Sprite(image);
+                        winImage.view.style.display = "initial";
+                        winImage.view.style.border = "none";
+                        winImage.width = 500;
+                        winImage.height = 250;
+                        return winImage;
+                    }
+                    return winBoard;
+                }
             }, 1000);
         }
 
         function Change() {
             let change = new Label();
             change.y = 20;
-            change.x = 200;
+            change.x = 325;
             change.view.style.fontSize = "60px";
             return change;
         }
@@ -218,5 +263,9 @@ export class Manager extends Node {
             change.view.style.visibility = "visible";
             setTimeout(() => change.view.style.visibility = "hidden", 500);
         }
+    }
+
+    _onClickRetry() {
+
     }
 }

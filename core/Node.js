@@ -64,9 +64,8 @@ export class Node {
         }
     }
     delete() {
-        this._active = false;
+        // this._active = false;
         this.view.style.display = "none";
-        // this.view.style.backgroundColor = "black";
     }
     flipOpen() {
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });

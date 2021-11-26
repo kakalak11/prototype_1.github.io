@@ -13,6 +13,7 @@ function createWindow() {
     let manager = new Manager(deck);
     let menu = new Menu();
     let background = new Background(WINDOW_WIDTH, WINDOW_HEIGHT);
+    let title = new Title();
 
     let startButton = new Start();
     let resetButton = new Reset();
@@ -26,10 +27,23 @@ function createWindow() {
 
     game_window.addChild(background);
     game_window.addChild(menu);
+    game_window.addChild(title);
     menu.addChild(startButton);
     menu.addChild(resetButton);
     menu.addChild(retryButton);
     game_window.addChild(deck);
+
+    function Title() {
+        let title = new Label("TRUC XANH");
+        title.view.style.fontSize = "60px";
+        title.x = 100;
+        title.y = 10;
+        title.width = 500;
+        title.height = 65;
+        // title.view.style.backgroundColor = "black";
+
+        return title
+    }
 
     function Menu() {
         let menu = new Node();
@@ -92,9 +106,12 @@ function createWindow() {
         return deck;
     }
 
+
+
     function onClickStart(deck) {
         console.log("game start");
         this.setup();
+        startButton.view.removeEventListener("click", _onClickStart)
         return null;
     }
 

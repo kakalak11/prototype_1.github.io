@@ -21,9 +21,9 @@ function createWindow() {
     let _onClickStart = onClickStart.bind(manager);
     let _onClickReset = onClickReset.bind(manager);
     let _onClickRetry = onClickRetry.bind(manager);
-    startButton.view.addEventListener("click", _onClickStart, deck); //For debugg
+    startButton.view.addEventListener("click", _onClickStart, deck);
     resetButton.view.addEventListener("click", _onClickReset, deck);
-    retryButton.view.addEventListener("click", _onClickRetry);
+    retryButton.view.addEventListener("click", _onClickRetry, deck);
 
     game_window.addChild(background);
     game_window.addChild(menu);
@@ -125,6 +125,7 @@ function createWindow() {
 
     function onClickRetry() {
         alert("Not work yet!");
+        this._onClickRetry()
     }
 }
 

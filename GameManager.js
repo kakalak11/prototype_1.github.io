@@ -18,7 +18,6 @@ export class Manager extends Node {
     }
 
     setup() {
-        console.log(this.canClick);
         let index = 0;
         let array = ["./Images/circle.png",
             "./Images/diamond.png",
@@ -69,11 +68,14 @@ export class Manager extends Node {
 
             function spread(card, x, y, delayStep) {
                 let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
-                tl.to(card.view, { x: 200, y: 150, duration: 0 });
+                tl.to(card.view, { x: 200, y: 150, opacity: 0, duration: 0 });
+                tl.to(card.view, { opacity: 1, duration: 0.1 });
+                tl.delay(0.2);
                 tl.to(card.view, { ease: Back.easeOut.config(3), x: x, y: y, duration: 0.5 });
                 tl.delay(0.5 + delayStep * 0.1);
             }
         }
+        console.log(this.deck);
         this._newStartGame(this.coin);
         this.board = this._createScoreBoard(this.coin);
     }
@@ -88,7 +90,7 @@ export class Manager extends Node {
             let _onClickCard = onClickCard.bind(element, this);
             element.view.addEventListener("click", _onClickCard);
         });
-        let countWin = 10;
+        let countWin = 8;
         function onClickCard(game) {
             console.log(game);
             console.log(game.canClick);
@@ -189,7 +191,9 @@ export class Manager extends Node {
         }
 
         if (coin <= 0) {
+            console.log(this.deck);
             this.deck.flipAway();
+            console.log("lose");
             setTimeout(() => {
                 this.board.view.style.display = "initial";
                 this.board.children[0].string = "GAME OVER !!!";
@@ -202,7 +206,7 @@ export class Manager extends Node {
                     let image = new Img("./fail.gif");
                     winBoard.addChild(image)
                     // winBoard.view.style.backgroundColor = "black";
-                    winBoard.x = -45;
+                    winBoard.x = -49;
                     winBoard.y = -300;
                     // winBoard.string = coin + "/n";
 
@@ -266,6 +270,7 @@ export class Manager extends Node {
     }
 
     _onClickRetry() {
-
+        console.log(this.deck);
+        this.deck.flipOpen();
     }
 }

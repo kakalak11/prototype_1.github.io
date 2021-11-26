@@ -54,14 +54,10 @@ export class Node {
         this.view.appendChild(node.view);
     }
     display() {
-        if (this._active) {
-            this.view.style.display = "none";
-        }
+        this.view.style.display = "none";
     }
     hide() {
-        if (this._active) {
-            this.view.style.display = "initial";
-        }
+        this.view.style.display = "initial";
     }
     delete() {
         // this._active = false;
@@ -79,7 +75,6 @@ export class Node {
         tl.add(() => this.children.forEach(element => element.hide()));
         tl.to(this.view, { opacity: 1, duration: 0.5 });
         tl.delay(0.5);
-
     }
     flipAway() {
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });

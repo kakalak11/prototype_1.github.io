@@ -117,14 +117,12 @@ function createWindow() {
 
 
     function onClickReset(deck) {
-        alert("Reset !");
         location.reload();
         this.setup();
         return null;
     }
 
     function onClickRetry() {
-        alert("Not work yet!");
         this._onClickRetry()
     }
 }

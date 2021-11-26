@@ -70,7 +70,7 @@ export class Manager extends Node {
                 let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
                 tl.to(card.view, { x: 200, y: 150, opacity: 0, duration: 0 });
                 tl.to(card.view, { opacity: 1, duration: 0.1 });
-                tl.delay(0.2);
+                tl.delay(0.5 + delayStep * 0.1);
                 tl.to(card.view, { ease: Back.easeOut.config(3), x: x, y: y, duration: 0.5 });
                 tl.delay(0.5 + delayStep * 0.1);
             }
@@ -270,7 +270,9 @@ export class Manager extends Node {
     }
 
     _onClickRetry() {
+        this.deck.flipAway();
         console.log(this.deck);
-        this.deck.flipOpen();
+        this.setup(retry)
+        // this.deck.flipClose();
     }
 }

@@ -7,7 +7,7 @@ export class Manager extends Node {
     constructor(deck) {
         super();
         this.started = null;
-        this.coin = 1000;
+        this.coin = 10000;
         this.collum = 5;
         this.row = 4;
         this.deck = deck;
@@ -93,7 +93,7 @@ export class Manager extends Node {
             let _onClickCard = onClickCard.bind(element, this);
             element.view.addEventListener("click", _onClickCard);
         });
-        let countWin = 8;
+        let countWin = 0;
         function onClickCard(game) {
             console.log(game);
             console.log(game.canClick);

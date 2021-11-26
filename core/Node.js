@@ -65,22 +65,22 @@ export class Node {
     }
     flipOpen() {
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
-        tl.to(this.view, { opacity: 0, duration: 0.5 });
+        tl.to(this.view, { scaleX: 0, duration: 0.5, transformOrigin: '50px 50px' });
         tl.add(() => this.children.forEach(element => element.display()));
-        tl.to(this.view, { opacity: 1, duration: 0.5 });
+        tl.to(this.view, { scaleX: 1, duration: 0.5, transformOrigin: '50px 50px' });
     }
     flipClose() {
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
-        tl.to(this.view, { opacity: 0, duration: 0.5 });
+        tl.to(this.view, { scaleX: 0, duration: 0.5, transformOrigin: '50px 50px' });
         tl.add(() => this.children.forEach(element => element.hide()));
-        tl.to(this.view, { opacity: 1, duration: 0.5 });
+        tl.to(this.view, { scaleX: 1, duration: 0.5, transformOrigin: '50px 50px' });
         tl.delay(0.5);
     }
     flipAway() {
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
-        tl.to(this.view, { opacity: 0, duration: 0.5 });
+        tl.to(this.view, { scaleX: 0, duration: 0.5, transformOrigin: '50px 50px' });
         tl.add(() => this.children.forEach(element => element.delete()));
-        tl.to(this.view, { opacity: 1, duration: 0.5 });
+        tl.to(this.view, { scaleX: 1, duration: 0.5, transformOrigin: '50px 50px' });
         tl.delay(0.5);
     }
     spreadDeck(x, y) {

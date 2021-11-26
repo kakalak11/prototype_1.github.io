@@ -69,9 +69,9 @@ export class Manager extends Node {
             function spread(card, x, y, delayStep) {
                 let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
                 tl.to(card.view, { x: 200, y: 150, opacity: 0, duration: 0 });
+                tl.delay(3);
                 tl.to(card.view, { opacity: 1, duration: 0.1 });
-                tl.delay(0.5 + delayStep * 0.1);
-                tl.to(card.view, { ease: Back.easeOut.config(3), x: x, y: y, duration: 0.5 });
+                tl.to(card.view, { ease: Back.easeOut.config(7), x: x, y: y, duration: 0.5 });
                 tl.delay(0.5 + delayStep * 0.1);
             }
         }
@@ -86,6 +86,9 @@ export class Manager extends Node {
 
     _newStartGame(coin) {
         console.log(this);
+        let click = new Audio('click.wav');
+        let correct = new Audio('correct.wav');
+        let wrong = new Audio('wrong.wav');
         this.deck.children.forEach(element => {
             let _onClickCard = onClickCard.bind(element, this);
             element.view.addEventListener("click", _onClickCard);
@@ -94,6 +97,7 @@ export class Manager extends Node {
         function onClickCard(game) {
             console.log(game);
             console.log(game.canClick);
+            click.play();
             if (!game.canClick) return null;
             if (!game.firstCard) {
                 game.firstCard = this;
@@ -127,6 +131,7 @@ export class Manager extends Node {
         }
 
         function cardMatch(firstCard, secondCard, win) {
+            correct.play();
             firstCard.flipAway();
             secondCard.flipAway();
             coin += 1000;
@@ -134,6 +139,7 @@ export class Manager extends Node {
             update(1000, coin, win);
         }
         function cardMiss(firstCard, secondCard) {
+            wrong.play();
             firstCard.flipClose();
             secondCard.flipClose();
             coin -= 500;
@@ -173,6 +179,8 @@ export class Manager extends Node {
     }
     _update(diff, coin, win) {
         console.log(this.deck);
+        let winSound = new Audio('win.wav');
+        let loseSound = new Audio('over.wav')
         if (!this.change) {
             this.change = new Change();
         }
@@ -192,6 +200,8 @@ export class Manager extends Node {
 
         if (coin <= 0) {
             console.log(this.deck);
+            loseSound.play();
+            loseSound.loop = true;
             this.deck.flipAway();
             console.log("lose");
             setTimeout(() => {
@@ -226,6 +236,7 @@ export class Manager extends Node {
         if (win > 9) {
             this.deck.flipAway();
             setTimeout(() => {
+                winSound.play();
                 this.board.view.style.display = "initial";
                 this.board.children[0].string = "YOUR SCORE: " + coin + "!!!";
                 this.board.children[0].view.style.fontSize = "45px";

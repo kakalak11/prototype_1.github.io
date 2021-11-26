@@ -9,6 +9,7 @@ const WINDOW_HEIGHT = 800;
 function createWindow() {
     var game_window = new Window(WINDOW_WIDTH, WINDOW_HEIGHT);
     document.body.appendChild(game_window.view);
+    let click = new Audio('click.wav');
     let deck = new Deck();
     let manager = new Manager(deck);
     let menu = new Menu();
@@ -28,10 +29,10 @@ function createWindow() {
     game_window.addChild(background);
     game_window.addChild(menu);
     game_window.addChild(title);
+    game_window.addChild(deck);
     menu.addChild(startButton);
     menu.addChild(resetButton);
-    menu.addChild(retryButton);
-    game_window.addChild(deck);
+    // menu.addChild(retryButton);
 
     function Title() {
         let title = new Label("TRUC XANH");
@@ -66,18 +67,22 @@ function createWindow() {
 
     function Start() {
         let startButton = new Label("START");
-        startButton.y = 30;
-        startButton.x = 30;
-        startButton.height = 30;
+        startButton.y = 5;
+        startButton.x = 5;
+        startButton.height = 85;
+        startButton.width = 241;
+        startButton.view.style.fontSize = "65px";
         startButton.view.style.border = "2px solid white";
         return startButton;
     }
 
     function Reset() {
         let resetButton = new Label("RESET");
-        resetButton.y = 30;
-        resetButton.x = 500 / 3 + 20;
-        resetButton.height = 30;
+        resetButton.y = 5;
+        resetButton.x = 256;
+        resetButton.height = 85;
+        resetButton.width = 236;
+        resetButton.view.style.fontSize = "65px";
         resetButton.view.style.border = "2px solid white";
         return resetButton;
     }
@@ -109,6 +114,7 @@ function createWindow() {
 
 
     function onClickStart(deck) {
+        click.play();
         console.log("game start");
         this.setup();
         startButton.view.removeEventListener("click", _onClickStart)
@@ -117,13 +123,15 @@ function createWindow() {
 
 
     function onClickReset(deck) {
+        click.play();
         location.reload();
         this.setup();
         return null;
     }
 
     function onClickRetry() {
-        this._onClickRetry()
+        alert("not work yet");
+        // this._onClickRetry()
     }
 }
 

@@ -20,9 +20,9 @@ function createWindow() {
     let _onClickStart = onClickStart.bind(manager);
     let _onClickReset = onClickReset.bind(manager);
     let _onClickRetry = onClickRetry.bind(manager);
-    startButton.view.addEventListener("click", _onClickStart); //For debugg
-    resetButton.view.addEventListener("click", _onClickReset);
-    resetButton.view.addEventListener("click", _onClickRetry);
+    startButton.view.addEventListener("click", _onClickStart, deck); //For debugg
+    resetButton.view.addEventListener("click", _onClickReset, deck);
+    retryButton.view.addEventListener("click", _onClickRetry);
 
     game_window.addChild(background);
     game_window.addChild(menu);
@@ -85,11 +85,6 @@ function createWindow() {
         return game_window;
     }
 
-    function onClickStart() {
-        console.log("game start");
-        this.setup();
-    }
-
     function Deck() {
         let deck = new Node();
         deck.x = 100;
@@ -97,12 +92,22 @@ function createWindow() {
         return deck;
     }
 
-    function onClickReset() {
-        alert("Not work yet!");
+    function onClickStart(deck) {
+        console.log("game start");
+        this.setup();
+        return null;
+    }
+
+
+    function onClickReset(deck) {
+        alert("Reset !");
+        location.reload();
+        this.setup();
+        return null;
     }
 
     function onClickRetry() {
-        alert("Still not work yet!");
+        alert("Not work yet!");
     }
 }
 

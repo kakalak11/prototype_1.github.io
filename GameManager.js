@@ -7,22 +7,24 @@ export class Manager extends Node {
     constructor(deck) {
         super();
         this.started = null;
-        this.coin = 10000;
+        this.coin = 1000;
         this.collum = 5;
         this.row = 4;
-        this.canClick = true;
+        this.canClick = true || this._canClick;
         this.deck = deck;
         this.firstCard = null;
         this.secondCard = null;
-        this.board = this._createScoreBoard(this.coin);
         this.temp = [];
-        this.setup(this.coin);
     }
-    setup(coin) {
+
+    set canClick(value) {
+        this._canClick = value;
+    }
+
+    setup() {
         if (this.started) {
             console.log("game started");
         }
-        this.started = true;
         let index = 0;
         let array = ["./Images/circle.png",
             "./Images/diamond.png",
@@ -48,35 +50,48 @@ export class Manager extends Node {
         for (let y = 0; y < this.row; y++) {
             for (let x = 0; x < this.collum; x++) {
                 let card = new Node();
-                setPosition(card, x, y);
+                setPosition(card, x, y, this.deck, index);
                 addCardElement(card, index);
-                this.deck.addChild(card);
+                // this.deck.addChild(card);
                 index++;
             }
         }
         function addCardElement(card, index) {
             let cover = new Cover();
             card.addChild(cover);
-            let label = new Label(Math.floor(index+1));
+            let label = new Label(Math.floor(index + 1));
             cover.addChild(label);
             let sprite = new Sprite(shuffledArray[index]);
             card.addChild(sprite);
         }
-        function setPosition(card, x_pos, y_pos) {
+        function setPosition(card, x_pos, y_pos, deck, delayStep) {
+            deck.addChild(card)
             // card.x = x_pos * 100;
             // card.y = y_pos * 100;
-            card.spreadDeck(x_pos * 100,y_pos * 100);
+            // card.spreadDeck(x_pos * 100, y_pos * 100);
+
+            spread(card, x_pos * 100, y_pos * 100);
+
+            function spread(card, x, y) {
+                let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
+                tl.to(card.view, 1, { x: x, y: y, duration: 0.1 });
+                tl.delay(0.5 + delayStep * 0.5);
+            }
         }
-        this._newStartGame(coin);
+        this._newStartGame(this.coin);
+        this.board = this._createScoreBoard(this.coin);
+    }
+
+    reset() {
+
     }
 
     _newStartGame(coin) {
-        console.log(this);
         this.deck.children.forEach(element => {
             let _onClickCard = onClickCard.bind(element, this);
             element.view.addEventListener("click", _onClickCard);
         });
-
+        let countWin = 9;
         function onClickCard(game) {
             if (!game.canClick) return null;
             if (!game.firstCard) {
@@ -95,7 +110,8 @@ export class Manager extends Node {
             this.flipOpen();
             setTimeout(() => {
                 if (game.firstCard.children[1].image === game.secondCard.children[1].image) {
-                    cardMatch(game.firstCard, game.secondCard);
+                    countWin++;
+                    cardMatch(game.firstCard, game.secondCard, countWin);
                     game.secondCard = null;
                     game.firstCard = null;
                     return null;
@@ -105,16 +121,16 @@ export class Manager extends Node {
                     game.firstCard = null;
                     return null;
                 }
-            },500);
+            }, 500);
             setTimeout(() => game.canClick = true, 1000);
         }
 
-        function cardMatch(firstCard, secondCard) {
+        function cardMatch(firstCard, secondCard, win) {
             console.log("match");
             firstCard.flipAway();
             secondCard.flipAway();
             coin += 1000;
-            update(1000, coin);
+            update(1000, coin, win);
         }
         function cardMiss(firstCard, secondCard) {
             firstCard.flipClose();
@@ -122,14 +138,13 @@ export class Manager extends Node {
             coin -= 500;
             update(-500, coin);
         }
-
-        let update = (diff, coin) => this._update(diff, coin);
+        let update = (diff, coin, win) => this._update(diff, coin, win);
 
     }
     _createScoreBoard(coin) {
-        console.log(coin);
         let board = new Board();
         let score = new Score(coin);
+        console.log(this.deck);
         this.deck.addChild(board)
         board.addChild(score);
 
@@ -146,14 +161,17 @@ export class Manager extends Node {
             let score = new Label(coin);
             score.x = 30;
             score.y = 20;
+            score.width = 500;
+            score.height = 100;
+            score.view.style.textAlign = "left";
             score.view.style.fontSize = "60px";
             return score;
         }
 
         return board;
     }
-    _update(diff, coin) {
-
+    _update(diff, coin, win) {
+        console.log(this.deck);
         if (!this.change) {
             this.change = new Change();
         }
@@ -167,8 +185,25 @@ export class Manager extends Node {
 
         if (diff === 1000) {
             this.board.children[0].string = coin;
-            this.change.string = diff;
+            this.change.string = "+" + diff;
             flashChange(this.change);
+        }
+
+        if (coin <= 0) {
+            this.deck.flipAway();
+            setTimeout(() => {
+                this.board.view.style.display = "initial";
+                this.board.children[0].string = "GAME OVER !!!";
+            }, 1000);
+        }
+        console.log(win);
+
+        if (win > 9) {
+            this.deck.flipAway();
+            setTimeout(() => {
+                this.board.view.style.display = "initial";
+                this.board.children[0].string = "GAME WIN !!!";
+            }, 1000);
         }
 
         function Change() {

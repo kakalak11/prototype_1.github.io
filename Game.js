@@ -5,61 +5,77 @@ import { Sprite } from "./core/Sprite.js";
 
 export class Game {
     constructor() {
-        this.countWin = 9;
+        this.countWin = 0;
+        this.started = false;
         this.running = false;
         this.retry = false;
-        this.coin = 1000;
+        this.reset = false;
+        this.coin = 10000;
         this.firstCard = null;
         this.secondCard = null;
         this.canClick = true;
         this.gameWindow = this._gameWindowInit();
         this.audio = this._audioSetup();
         this.deck = null;
-        this.scoreBoard = null; 
+        this.scoreBoard = null;
     }
 
     _onClickStart() {
-        if(this.running) return null;
+        if (this.started) return null;
+        if (this.running) return null;
         this.running = true;
         this.deck = this._deckInit();
         this.scoreBoard = this._scoreBoardInit();
         this.gameWindow.addChild(this.deck);
         this.gameWindow.addChild(this.scoreBoard);
+        console.log(this.gameWindow);
+        this.started = true;
         return null;
     }
 
     _onClickReset() {
-        this.coin = 1000;
+        this.coin = 10000;
         this.countWin = 0;
-        if (this.running) {
-            this.deck.flipAway();
-        }    
+        if (this.running) this.deck.flipAway();
         this.deck = null;
         this.scoreBoard.flipAway();
-        // this.scoreBoard = null;
+        console.log(this.scoreBoard);
+        this.scoreBoard = null;
         this.deck = this._deckInit();
         this.scoreBoard = this._scoreBoardInit();
+        this.gameWindow.children.splice(3, 2);
+        console.log(this.gameWindow.children);
         this.gameWindow.addChild(this.deck);
+        this.gameWindow.addChild(this.scoreBoard);
+        console.log(this.gameWindow);
         this.running = true;
         this.canClick = true;
-        debugger;
+        this.reset = true;
+        this.retry = false;
+        return null;
     }
 
     _onClickRetry() {
         this.retry = true;
         this.countWin = 0;
         console.log(this.scoreBoard);
-        this.coin = 1000;
+        this.coin = 10000;
         if (this.running) this.deck.flipAway();
         this.deck = null;
         this.scoreBoard.flipAway();
-        this.scoreBoard = null;
-        this.scoreBoard = this._scoreBoardInit();
         console.log(this.scoreBoard);
+        this.scoreBoard = null;
         this.deck = this._deckInit();
-        this.running = true;
+        this.scoreBoard = this._scoreBoardInit();
+        this.gameWindow.children.splice(3, 2);
+        console.log(this.gameWindow.children);
         this.gameWindow.addChild(this.deck);
+        this.gameWindow.addChild(this.scoreBoard);
+        console.log(this.gameWindow);
+        this.running = true;
         this.canClick = true;
+        this.reset = true;
+        return null;
     }
 
     _audioSetup() {
@@ -136,37 +152,31 @@ export class Game {
             return menu;
         }
 
-        function Retry() {
-            let retryButton = new Label("RETRY");
-            retryButton.x = 500;
-            retryButton.y = 30;
-            retryButton.height = 30;
-            retryButton.view.style.border = "2px solid white";
-            return retryButton;
-        }
-
+        
         function Start() {
             let startButton = new Label("START");
-            startButton.y = 5;
+            startButton.y = 20;
             startButton.x = 5;
-            startButton.height = 85;
-            startButton.width = 241;
-            startButton.view.style.fontSize = "65px";
-            startButton.view.style.border = "2px solid white";
+            startButton.view.style.fontSize = "45px";
             return startButton;
         }
-
+        
         function Reset() {
             let resetButton = new Label("RESET");
-            resetButton.y = 5;
-            resetButton.x = 256;
-            resetButton.height = 85;
-            resetButton.width = 236;
-            resetButton.view.style.fontSize = "65px";
-            resetButton.view.style.border = "2px solid white";
+            resetButton.y = 20;
+            resetButton.x = 167;
+            resetButton.view.style.fontSize = "45px";
             return resetButton;
         }
 
+        function Retry() {
+            let retryButton = new Label("RETRY");
+            retryButton.x = 167*2;
+            retryButton.y = 20;
+            retryButton.view.style.fontSize = "45px";
+            return retryButton;
+        }
+        
         function Background(width, height) {
             let background = new Sprite("./BG.jpg");
             background.view.style.display = "initial";
@@ -184,6 +194,96 @@ export class Game {
             return game_window;
         }
         return game_window;
+    }
+
+    _scoreBoardInit() {
+        let scoreBoard = new Board(this.coin);
+        let change = new Change();
+        scoreBoard.addChild(change);
+
+        function Board(coin) {
+            let scoreBoard = new Node();
+            scoreBoard.x = 100;
+            scoreBoard.y = 502;
+            scoreBoard.width = 502;
+            scoreBoard.height = 100;
+            scoreBoard.color = "black";
+            let text = new Label("Score: ");
+            text.view.style.fontSize = "50px";
+            text.y = 22;
+            text.x = 20;
+
+            let score = new Score();
+            scoreBoard.addChild(text);
+            scoreBoard.addChild(score);
+
+            function Score() {
+                let score = new Label(coin);
+                score.y = 22;
+                score.x = -30;
+                score.width = 502;
+                score.height = 100;
+                score.view.style.fontSize = "50px";
+                return score;
+            }
+
+            return scoreBoard;
+        }
+
+        function Change() {
+            let change = new Label("");
+            change.view.style.fontSize = "50px";
+            change.x = 275;
+            change.y = 20;
+            change.width = 200;
+            change.view.style.display = 'none';
+            return change;
+        }
+
+        return scoreBoard;
+    }
+
+    _update(value) {
+        // if (!this.rest) {
+        //     if (!this.text) this.text = this.scoreBoard.children[0];
+        //     if (!this.score) this.score = this.scoreBoard.children[1];
+        //     if (!this.change) this.change = this.scoreBoard.children[2];
+        // }
+        this.text = this.scoreBoard.children[0];
+        this.score = this.scoreBoard.children[1];
+        this.change = this.scoreBoard.children[2];
+        this.score.string = this.coin;
+        console.log(this.coin);
+        console.log(this.score);
+        if (this.coin <= 0) {
+            this._lose();
+            return null;
+        }
+
+        if (this.countWin > 9) {
+            this._win();
+            return null;
+        }
+
+        if (value === 1000) {
+            this.change.string = "+" + value;
+            flashChange(this.change);
+            value = null;
+            return null;
+        }
+
+        if (value === -500) {
+            this.change.string = value;
+            flashChange(this.change);
+            value = null;
+            return null;
+        }
+
+        function flashChange(change) {
+            change.view.style.display = "initial";
+            setTimeout(() => change.view.style.display = "none", 500);
+        }
+
     }
 
     _deckInit() {
@@ -258,54 +358,6 @@ export class Game {
         return deck;
     }
 
-    _scoreBoardInit() {
-        let scoreBoard = new Board(this.coin);
-        this.gameWindow.addChild(scoreBoard);
-        let change = new Change();
-        scoreBoard.addChild(change);
-
-        function Board(coin) {
-            let scoreBoard = new Node();
-            scoreBoard.x = 100;
-            scoreBoard.y = 502;
-            scoreBoard.width = 502;
-            scoreBoard.height = 100;
-            scoreBoard.color = "black";
-            let text = new Label("Score: ");
-            text.view.style.fontSize = "50px";
-            text.y = 22;
-            text.x = 20;
-
-            let score = new Score();
-            scoreBoard.addChild(text);
-            scoreBoard.addChild(score);
-
-            function Score() {
-                let score = new Label(coin);
-                score.y = 22;
-                score.x = -30;
-                score.width = 502;
-                score.height = 100;
-                score.view.style.fontSize = "50px";
-                return score;
-            }
-
-            return scoreBoard;
-        }
-
-        function Change() {
-            let change = new Label("");
-            change.view.style.fontSize = "50px";
-            change.x = 275;
-            change.y = 20;
-            change.width = 200;
-            change.view.style.display = 'none';
-            return change;
-        }
-
-        return scoreBoard;
-    }
-
     _onClickCard(game) {
         game.audio.click();
         if (!game.canClick) return null;
@@ -359,44 +411,6 @@ export class Game {
         // this.countWin++;
         this._update(-500);
         return null;
-    }
-
-    _update(value) {
-        if (!this.text) this.text = this.scoreBoard.children[0];
-        if (!this.score) this.score = this.scoreBoard.children[1];
-        if (!this.change) this.change = this.scoreBoard.children[2];
-        this.score.string = this.coin;
-        console.log(this.scoreBoard);
-        if (this.coin <= 0) {
-            this._lose();
-            return null;
-        }
-
-        if (this.countWin > 9) {
-            this._win();
-            return null;
-        }
-
-        if (value === 1000) {
-            this.change.string = "+" + value;
-            flashChange(this.change);
-            value = null;
-            return null;
-        }
-
-        if (value === -500) {
-            this.change.string = value;
-            flashChange(this.change);
-            value = null;
-            return null;
-        }
-
-        function flashChange(change) {
-            change.view.style.display = "initial";
-            setTimeout(() => change.view.style.display = "none", 500);
-        }
-
-
     }
 
     _lose() {

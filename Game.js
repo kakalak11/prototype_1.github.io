@@ -6,14 +6,60 @@ import { Sprite } from "./core/Sprite.js";
 export class Game {
     constructor() {
         this.countWin = 9;
+        this.running = false;
+        this.retry = false;
         this.coin = 1000;
         this.firstCard = null;
         this.secondCard = null;
         this.canClick = true;
+        this.gameWindow = this._gameWindowInit();
         this.audio = this._audioSetup();
+        this.deck = null;
+        this.scoreBoard = null; 
+    }
+
+    _onClickStart() {
+        if(this.running) return null;
+        this.running = true;
         this.deck = this._deckInit();
         this.scoreBoard = this._scoreBoardInit();
-        this.gameWindow = this._gameWindowInit(this.deck, this.scoreBoard);
+        this.gameWindow.addChild(this.deck);
+        this.gameWindow.addChild(this.scoreBoard);
+        return null;
+    }
+
+    _onClickReset() {
+        this.coin = 1000;
+        this.countWin = 0;
+        if (this.running) {
+            this.deck.flipAway();
+        }    
+        this.deck = null;
+        this.scoreBoard.flipAway();
+        // this.scoreBoard = null;
+        this.deck = this._deckInit();
+        this.scoreBoard = this._scoreBoardInit();
+        this.gameWindow.addChild(this.deck);
+        this.running = true;
+        this.canClick = true;
+        debugger;
+    }
+
+    _onClickRetry() {
+        this.retry = true;
+        this.countWin = 0;
+        console.log(this.scoreBoard);
+        this.coin = 1000;
+        if (this.running) this.deck.flipAway();
+        this.deck = null;
+        this.scoreBoard.flipAway();
+        this.scoreBoard = null;
+        this.scoreBoard = this._scoreBoardInit();
+        console.log(this.scoreBoard);
+        this.deck = this._deckInit();
+        this.running = true;
+        this.gameWindow.addChild(this.deck);
+        this.canClick = true;
     }
 
     _audioSetup() {
@@ -42,7 +88,7 @@ export class Game {
         return audio;
     }
 
-    _gameWindowInit(deck, scoreBoard) {
+    _gameWindowInit() {
         const WINDOW_WIDTH = 700;
         const WINDOW_HEIGHT = 800;
         let game_window = new Window(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -54,21 +100,19 @@ export class Game {
         let startButton = new Start();
         let resetButton = new Reset();
         let retryButton = new Retry();
-        // let _onClickStart = onClickStart.bind(game);
-        // let _onClickReset = onClickReset.bind(manager);
-        // let _onClickRetry = onClickRetry.bind(manager);
-        // startButton.view.addEventListener("click", _onClickStart, deck);
-        // resetButton.view.addEventListener("click", _onClickReset, deck);
-        // retryButton.view.addEventListener("click", _onClickRetry, deck);
+        let onClickStart = this._onClickStart.bind(this);
+        let onClickReset = this._onClickReset.bind(this);
+        let onClickRetry = this._onClickRetry.bind(this);
+        startButton.view.addEventListener("click", onClickStart);
+        resetButton.view.addEventListener("click", onClickReset);
+        retryButton.view.addEventListener("click", onClickRetry);
 
         game_window.addChild(background);
         game_window.addChild(menu);
         game_window.addChild(title);
-        game_window.addChild(deck);
-        game_window.addChild(scoreBoard);
         menu.addChild(startButton);
         menu.addChild(resetButton);
-        // menu.addChild(retryButton);
+        menu.addChild(retryButton);
 
         function Title() {
             let title = new Label("TRUC XANH");
@@ -94,7 +138,7 @@ export class Game {
 
         function Retry() {
             let retryButton = new Label("RETRY");
-            retryButton.x = 350;
+            retryButton.x = 500;
             retryButton.y = 30;
             retryButton.height = 30;
             retryButton.view.style.border = "2px solid white";
@@ -143,9 +187,12 @@ export class Game {
     }
 
     _deckInit() {
-        if (!this.image) {
+        if (!this.retry) {
             this.image = new shuffleImage();
         }
+        this.retry = false;
+
+        this.canClick = false;
         let deck = new Deck(this.image);
 
         function shuffleImage() {
@@ -186,8 +233,7 @@ export class Game {
                 for (let y = 0; y < 4; y++) {
                     for (let x = 0; x < 5; x++) {
                         let card = new Node();
-                        card.x = x * 100;
-                        card.y = y * 100;
+                        card.spreadDeck(x * 100, y * 100, index);
                         let sprite = new Sprite(image[index]);
                         card.addChild(sprite);
                         let cover = new Cover();
@@ -207,13 +253,15 @@ export class Game {
             let _onClick = this._onClickCard.bind(element, this);
             element.view.addEventListener("click", _onClick);
         });
+        setTimeout(() => this.canClick = true, 2500);
+
         return deck;
     }
 
     _scoreBoardInit() {
         let scoreBoard = new Board(this.coin);
+        this.gameWindow.addChild(scoreBoard);
         let change = new Change();
-
         scoreBoard.addChild(change);
 
         function Board(coin) {
@@ -246,7 +294,7 @@ export class Game {
         }
 
         function Change() {
-            let change = new Label("+ 1000");
+            let change = new Label("");
             change.view.style.fontSize = "50px";
             change.x = 275;
             change.y = 20;
@@ -321,23 +369,25 @@ export class Game {
         console.log(this.scoreBoard);
         if (this.coin <= 0) {
             this._lose();
-            return null
+            return null;
         }
 
         if (this.countWin > 9) {
             this._win();
-            return null
+            return null;
         }
 
         if (value === 1000) {
             this.change.string = "+" + value;
             flashChange(this.change);
+            value = null;
             return null;
         }
 
         if (value === -500) {
             this.change.string = value;
             flashChange(this.change);
+            value = null;
             return null;
         }
 
@@ -371,6 +421,9 @@ export class Game {
                 return loseImage;
             }
         }, 500);
+
+        this.running = false;
+        return true;
     }
 
     _win() {
@@ -394,7 +447,9 @@ export class Game {
                 winImage.y = -300;
                 return winImage;
             }
-            return winBoard;
         }, 1000);
+
+        this.running = false;
+        return true;
     }
 }

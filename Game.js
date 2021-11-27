@@ -153,7 +153,7 @@ export class Game {
             return menu;
         }
 
-        
+
         function Start() {
             let startButton = new Label("START");
             startButton.y = 20;
@@ -161,7 +161,7 @@ export class Game {
             startButton.view.style.fontSize = "45px";
             return startButton;
         }
-        
+
         function Reset() {
             let resetButton = new Label("RESET");
             resetButton.y = 20;
@@ -172,12 +172,12 @@ export class Game {
 
         function Retry() {
             let retryButton = new Label("RETRY");
-            retryButton.x = 167*2;
+            retryButton.x = 167 * 2;
             retryButton.y = 20;
             retryButton.view.style.fontSize = "45px";
             return retryButton;
         }
-        
+
         function Background(width, height) {
             let background = new Sprite("./assets/images/BG.jpg");
             background.view.style.display = "initial";
@@ -382,13 +382,11 @@ export class Game {
                 game._matchCard(game.firstCard, game.secondCard);
                 game.firstCard = null;
                 game.secondCard = null;
-                game.canClick = true;
                 return true;
             } else {
                 game._missCard(game.firstCard, game.secondCard);
                 game.firstCard = null;
                 game.secondCard = null;
-                game.canClick = true;
                 return false;
             }
         }, 500);
@@ -401,6 +399,7 @@ export class Game {
         secondCard.disappear();
         this.countWin++;
         this._update(1000);
+        setTimeout(() => this.canClick = true, 1000);
         return null;
     }
 
@@ -409,7 +408,7 @@ export class Game {
         this.coin -= 500;
         firstCard.hide();
         secondCard.hide();
-        // this.countWin++;
+        setTimeout(() => this.canClick = true, 1000);
         this._update(-500);
         return null;
     }

@@ -9,6 +9,7 @@ export class Label extends Node {
         this.view.style.fontSize = "30px";
         this.view.style.cursor = "pointer";
         this.view.style.textAlign = "center";
+        this.view.style.userSelect = "none"
         this.width = 100;
         this.height = 100;
         this.y = this.height / 2 - 15;

@@ -51,38 +51,42 @@ export class Node {
     }
     initView() {
         this.view = document.createElement('div');
+        return null;
     }
     addChild(node) {
         this.children.push(node);
         this.view.appendChild(node.view);
+        return null;
     }
-    display() {
+    unfold() {
         this.view.style.display = "none";
+        return null;
+    }
+    fold() {
+        this.view.style.display = "initial";
+        return null;
+    }
+    show() {
+        let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
+        tl.to(this.view, { scaleX: 0, duration: 0.5, transformOrigin: '50px 50px' });
+        tl.add(() => this.children.forEach(element => element.unfold()));
+        tl.to(this.view, { scaleX: 1, duration: 0.5, transformOrigin: '50px 50px' });
+        return null;
     }
     hide() {
-        this.view.style.display = "initial";
-    }
-    delete() {
-        this.view.style.display = "none";
-    }
-    flipOpen() {
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
         tl.to(this.view, { scaleX: 0, duration: 0.5, transformOrigin: '50px 50px' });
-        tl.add(() => this.children.forEach(element => element.display()));
-        tl.to(this.view, { scaleX: 1, duration: 0.5, transformOrigin: '50px 50px' });
-    }
-    flipClose() {
-        let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
-        tl.to(this.view, { scaleX: 0, duration: 0.5, transformOrigin: '50px 50px' });
-        tl.add(() => this.children.forEach(element => element.hide()));
+        tl.add(() => this.children.forEach(element => element.fold()));
         tl.to(this.view, { scaleX: 1, duration: 0.5, transformOrigin: '50px 50px' });
         tl.delay(0.5);
+        return null;
     }
-    flipAway() {
+    disappear() {
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
         tl.to(this.view, { opacity: 0, duration: 0.5 });
-        tl.add(() => this.children.forEach(element => element.delete()));
+        tl.add(() => this.children.forEach(element => element.view.style.display = "none"));
         tl.delay(0.5);
+        return null;
     }
     spreadDeck(x, y, index) {
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
@@ -90,5 +94,6 @@ export class Node {
         tl.to(this.view, { opacity: 1, duration: 0.2 });
         tl.to(this.view, { x: x, y: y, ease: Back.easeOut.config(3), duration: 0.5 });
         tl.delay(0.5 + index * 0.1);
+        return null;
     }
 }

@@ -4,7 +4,7 @@ import { Node } from "./core/Node.js";
 import { Sprite } from "./core/Sprite.js";
 
 export class Game {
-    constructor() {
+    constructor(play) {
         this.countWin = 0;
         this.started = false;
         this.running = false;
@@ -14,8 +14,8 @@ export class Game {
         this.firstCard = null;
         this.secondCard = null;
         this.canClick = true;
-        this.gameWindow = this._gameWindowInit();
-        this.audio = this._audioSetup();
+        this.audio = this._audioInit();
+        this.gameWindow = play ? this.gameWindowInit() : null;
         this.deck = null;
         this.scoreBoard = null;
     }
@@ -36,9 +36,9 @@ export class Game {
     _onClickReset() {
         this.coin = 10000;
         this.countWin = 0;
-        if (this.running) this.deck.flipAway();
+        if (this.running) this.deck.disappear();
         this.deck = null;
-        this.scoreBoard.flipAway();
+        this.scoreBoard.disappear();
         console.log(this.scoreBoard);
         this.scoreBoard = null;
         this.deck = this._deckInit();
@@ -60,9 +60,9 @@ export class Game {
         this.countWin = 0;
         console.log(this.scoreBoard);
         this.coin = 10000;
-        if (this.running) this.deck.flipAway();
+        if (this.running) this.deck.disappear();
         this.deck = null;
-        this.scoreBoard.flipAway();
+        this.scoreBoard.disappear();
         console.log(this.scoreBoard);
         this.scoreBoard = null;
         this.deck = this._deckInit();
@@ -78,33 +78,33 @@ export class Game {
         return null;
     }
 
-    _audioSetup() {
+    _audioInit() {
         var audio = {
             click: () => {
-                if (!this.click) this.click = new Audio('./click.wav');
+                if (!this.click) this.click = new Audio('./assets/sounds/click.wav');
                 this.click.play();
             },
             lose: () => {
-                if (!this.lose) this.lose = new Audio('over.wav');
+                if (!this.lose) this.lose = new Audio('./assets/sounds/over.wav');
                 this.lose.play();
             },
             win: () => {
-                if (!this.win) this.win = new Audio('win.wav');
+                if (!this.win) this.win = new Audio('./assets/sounds/win.wav');
                 this.win.play();
             },
             correct: () => {
-                if (!this.correct) this.correct = new Audio('correct.wav');
+                if (!this.correct) this.correct = new Audio('./assets/sounds/correct.wav');
                 this.correct.play();
             },
             wrong: () => {
-                if (!this.wrong) this.wrong = new Audio('wrong.wav');
+                if (!this.wrong) this.wrong = new Audio('./assets/sounds/wrong.wav');
                 this.wrong.play();
             }
         };
         return audio;
     }
 
-    _gameWindowInit() {
+    gameWindowInit() {
         const WINDOW_WIDTH = 700;
         const WINDOW_HEIGHT = 800;
         let game_window = new Window(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -122,6 +122,7 @@ export class Game {
         startButton.view.addEventListener("click", onClickStart);
         resetButton.view.addEventListener("click", onClickReset);
         retryButton.view.addEventListener("click", onClickRetry);
+        game_window.view.addEventListener("click", this.audio.click());
 
         game_window.addChild(background);
         game_window.addChild(menu);
@@ -178,7 +179,7 @@ export class Game {
         }
         
         function Background(width, height) {
-            let background = new Sprite("./BG.jpg");
+            let background = new Sprite("./assets/images/BG.jpg");
             background.view.style.display = "initial";
             background.width = width;
             background.height = height;
@@ -193,6 +194,7 @@ export class Game {
             game_window.view.style.border = "2px solid black";
             return game_window;
         }
+
         return game_window;
     }
 
@@ -294,28 +296,27 @@ export class Game {
 
         this.canClick = false;
         let deck = new Deck(this.image);
-
         function shuffleImage() {
-            let array = ["./Images/circle.png",
-                "./Images/diamond.png",
-                "./Images/halfsquare.png",
-                "./Images/heart.png",
-                "./Images/rectangle.png",
-                "./Images/shape.png",
-                "./Images/sixstar.png",
-                "./Images/square.png",
-                "./Images/star.png",
-                "./Images/triangle.png",
-                "./Images/triangle.png",
-                "./Images/circle.png",
-                "./Images/diamond.png",
-                "./Images/halfsquare.png",
-                "./Images/heart.png",
-                "./Images/rectangle.png",
-                "./Images/shape.png",
-                "./Images/sixstar.png",
-                "./Images/square.png",
-                "./Images/star.png"];
+            let array = ["./assets/images/circle.png",
+                "./assets/images/diamond.png",
+                "./assets/images/halfsquare.png",
+                "./assets/images/heart.png",
+                "./assets/images/rectangle.png",
+                "./assets/images/shape.png",
+                "./assets/images/sixstar.png",
+                "./assets/images/square.png",
+                "./assets/images/star.png",
+                "./assets/images/triangle.png",
+                "./assets/images/triangle.png",
+                "./assets/images/circle.png",
+                "./assets/images/diamond.png",
+                "./assets/images/halfsquare.png",
+                "./assets/images/heart.png",
+                "./assets/images/rectangle.png",
+                "./assets/images/shape.png",
+                "./assets/images/sixstar.png",
+                "./assets/images/square.png",
+                "./assets/images/star.png"];
             const shuffledArray = array.sort((a, b) => 0.5 - Math.random());
             return shuffledArray;
         }
@@ -363,18 +364,18 @@ export class Game {
         if (!game.canClick) return null;
         if (!game.firstCard) {
             game.firstCard = this;
-            game.firstCard.flipOpen();
+            game.firstCard.show();
             return null;
         }
         if (game.firstCard === this) {
             console.log("same card");
-            game.firstCard.flipClose();
+            game.firstCard.hide();
             game.firstCard = null;
             return null;
         }
 
         game.secondCard = this;
-        game.secondCard.flipOpen();
+        game.secondCard.show();
         game.canClick = false;
         setTimeout(() => {
             if (game.firstCard.children[0].image === game.secondCard.children[0].image) {
@@ -396,8 +397,8 @@ export class Game {
     _matchCard(firstCard, secondCard) {
         this.audio.correct();
         this.coin += 1000;
-        firstCard.flipAway();
-        secondCard.flipAway();
+        firstCard.disappear();
+        secondCard.disappear();
         this.countWin++;
         this._update(1000);
         return null;
@@ -406,8 +407,8 @@ export class Game {
     _missCard(firstCard, secondCard) {
         this.audio.wrong();
         this.coin -= 500;
-        firstCard.flipClose();
-        secondCard.flipClose();
+        firstCard.hide();
+        secondCard.hide();
         // this.countWin++;
         this._update(-500);
         return null;
@@ -415,7 +416,7 @@ export class Game {
 
     _lose() {
         this.audio.lose();
-        this.deck.flipAway();
+        this.deck.disappear();
         setTimeout(() => {
             this.score.string = "GAME OVER !!!";
             this.score.view.style.fontSize = "60px";
@@ -426,7 +427,7 @@ export class Game {
             this.scoreBoard.addChild(image);
 
             function Img() {
-                let loseImage = new Sprite("./fail.gif");
+                let loseImage = new Sprite("./assets/images/fail.gif");
                 loseImage.view.style.display = "initial";
                 loseImage.view.style.border = "none";
                 loseImage.width = 502;
@@ -442,14 +443,14 @@ export class Game {
 
     _win() {
         this.audio.win();
-        this.deck.flipAway();
+        this.deck.disappear();
         setTimeout(() => {
             this.score.string = "YOUR SCORE: " + this.coin + "!!!";
             this.score.view.style.fontSize = "45px";
             this.score.x = 0;
             this.score.y = 20;
             this.text.string = "";
-            let image = new Img("./win.gif");
+            let image = new Img("./assets/images/win.gif");
             this.scoreBoard.addChild(image);
 
             function Img(image) {

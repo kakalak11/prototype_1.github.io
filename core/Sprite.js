@@ -20,19 +20,17 @@ export class Sprite extends Node {
         this.view.height = 98;
         this.view.style.border = "2px solid black";
         this.view.style.display = "none";
+
+        return null;
     }
     setImage() {
         this.view.src = this._image;
     }
-    display() {
-        if (this._active) {
+    unfold() {
             this.view.style.display = "initial";
-        }
     }
-    hide() {
-        if (this._active) {
+    fold() {
             this.view.style.display = "none";
-        }
     }
 
 }

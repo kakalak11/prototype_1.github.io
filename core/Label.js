@@ -7,7 +7,7 @@ export class Label extends Node {
         this.string = this._string;
         this.view.style.color = 'white';
         this.view.style.fontSize = "30px";
-        this.view.style.cursor = "pointer";
+        this.view.style.cursor = "context-menu";
         this.view.style.textAlign = "center";
         this.view.style.userSelect = "none"
         this.width = 100;

@@ -244,50 +244,7 @@ export class Game {
 
         return scoreBoard;
     }
-
-    _update(value) {
-        // if (!this.rest) {
-        //     if (!this.text) this.text = this.scoreBoard.children[0];
-        //     if (!this.score) this.score = this.scoreBoard.children[1];
-        //     if (!this.change) this.change = this.scoreBoard.children[2];
-        // }
-        this.text = this.scoreBoard.children[0];
-        this.score = this.scoreBoard.children[1];
-        this.change = this.scoreBoard.children[2];
-        this.score.string = this.coin;
-        console.log(this.coin);
-        console.log(this.score);
-        if (this.coin <= 0) {
-            this._lose();
-            return null;
-        }
-
-        if (this.countWin > 9) {
-            this._win();
-            return null;
-        }
-
-        if (value === 1000) {
-            this.change.string = "+" + value;
-            flashChange(this.change);
-            value = null;
-            return null;
-        }
-
-        if (value === -500) {
-            this.change.string = value;
-            flashChange(this.change);
-            value = null;
-            return null;
-        }
-
-        function flashChange(change) {
-            change.view.style.display = "initial";
-            setTimeout(() => change.view.style.display = "none", 500);
-        }
-
-    }
-
+    
     _deckInit() {
         if (!this.retry) {
             this.image = new shuffleImage();
@@ -411,6 +368,49 @@ export class Game {
         setTimeout(() => this.canClick = true, 1000);
         this._update(-500);
         return null;
+    }
+
+    _update(value) {
+        // if (!this.rest) {
+        //     if (!this.text) this.text = this.scoreBoard.children[0];
+        //     if (!this.score) this.score = this.scoreBoard.children[1];
+        //     if (!this.change) this.change = this.scoreBoard.children[2];
+        // }
+        this.text = this.scoreBoard.children[0];
+        this.score = this.scoreBoard.children[1];
+        this.change = this.scoreBoard.children[2];
+        this.score.string = this.coin;
+        console.log(this.coin);
+        console.log(this.score);
+        if (this.coin <= 0) {
+            this._lose();
+            return null;
+        }
+
+        if (this.countWin > 9) {
+            this._win();
+            return null;
+        }
+
+        if (value === 1000) {
+            this.change.string = "+" + value;
+            flashChange(this.change);
+            value = null;
+            return null;
+        }
+
+        if (value === -500) {
+            this.change.string = value;
+            flashChange(this.change);
+            value = null;
+            return null;
+        }
+
+        function flashChange(change) {
+            change.view.style.display = "initial";
+            setTimeout(() => change.view.style.display = "none", 500);
+        }
+
     }
 
     _lose() {

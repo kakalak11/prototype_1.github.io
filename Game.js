@@ -79,7 +79,7 @@ export class Game {
     }
 
     _audioInit() {
-        var audio = {
+        let audio = {
             click: () => {
                 if (!this.click) this.click = new Audio('./assets/sounds/click.wav');
                 this.click.play();
@@ -411,6 +411,7 @@ export class Game {
             setTimeout(() => change.view.style.display = "none", 500);
         }
 
+
     }
 
     _lose() {
@@ -435,6 +436,7 @@ export class Game {
                 return loseImage;
             }
         }, 500);
+
 
         this.running = false;
         return true;
@@ -462,6 +464,7 @@ export class Game {
                 return winImage;
             }
         }, 1000);
+
 
         this.running = false;
         return true;

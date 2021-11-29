@@ -28,7 +28,6 @@ export class Game {
         this.scoreBoard = this._scoreBoardInit();
         this.gameWindow.addChild(this.deck);
         this.gameWindow.addChild(this.scoreBoard);
-        console.log(this.gameWindow);
         this.started = true;
         return null;
     }
@@ -39,15 +38,12 @@ export class Game {
         if (this.running) this.deck.disappear();
         this.deck = null;
         this.scoreBoard.disappear();
-        console.log(this.scoreBoard);
         this.scoreBoard = null;
         this.deck = this._deckInit();
         this.scoreBoard = this._scoreBoardInit();
         this.gameWindow.children.splice(3, 2);
-        console.log(this.gameWindow.children);
         this.gameWindow.addChild(this.deck);
         this.gameWindow.addChild(this.scoreBoard);
-        console.log(this.gameWindow);
         this.running = true;
         this.canClick = true;
         this.reset = true;
@@ -58,20 +54,16 @@ export class Game {
     _onClickRetry() {
         this.retry = true;
         this.countWin = 0;
-        console.log(this.scoreBoard);
         this.coin = 10000;
         if (this.running) this.deck.disappear();
         this.deck = null;
         this.scoreBoard.disappear();
-        console.log(this.scoreBoard);
         this.scoreBoard = null;
         this.deck = this._deckInit();
         this.scoreBoard = this._scoreBoardInit();
         this.gameWindow.children.splice(3, 2);
-        console.log(this.gameWindow.children);
         this.gameWindow.addChild(this.deck);
         this.gameWindow.addChild(this.scoreBoard);
-        console.log(this.gameWindow);
         this.running = true;
         this.canClick = true;
         this.reset = true;
@@ -244,7 +236,7 @@ export class Game {
 
         return scoreBoard;
     }
-    
+
     _deckInit() {
         if (!this.retry) {
             this.image = new shuffleImage();

@@ -103,12 +103,20 @@ export class Node {
         return null;
     }
 
-    spreadDeck(x, y, index) {
+    spreadDeck(x, y, index, audio) {
+        shuffle(this, index, audio);
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
-        tl.to(this.view, { x: 200, y: 150, opacity: 0, duration: 0 });
-        tl.to(this.view, { opacity: 1, duration: 0.2 });
         tl.to(this.view, { x: x, y: y, ease: Back.easeOut.config(3), duration: 0.5 });
-        tl.delay(0.5 + index * 0.1);
+        tl.delay(3.2 + index * 0.1);
+
+        function shuffle(card, index, audio) {
+            let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
+            tl.to(card.view, { x: 200, y: 150, opacity: 0, duration: 0 });
+            tl.to(card.view, { opacity: 1, duration: 0.2, });
+            tl.add(() => audio.shuffle());
+            tl.delay(0.5 + index * 0.1);
+        }
+
         return null;
     }
 }

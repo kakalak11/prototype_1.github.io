@@ -28,12 +28,13 @@ export class Game {
         this.scoreBoard = this._scoreBoardInit();
         this.gameWindow.addChild(this.deck);
         this.gameWindow.addChild(this.scoreBoard);
-        console.log(this.gameWindow);
         this.started = true;
         return null;
     }
 
     _onClickReset() {
+        if (!this.started) return null;
+        this.audio.soundtrack().load();
         this.coin = 10000;
         this.countWin = 0;
         this.continueButton.view.style.display = "none";
@@ -55,6 +56,8 @@ export class Game {
     }
 
     _onClickRetry() {
+        if (!this.started) return null;
+        this.audio.soundtrack().load();
         this.retry = true;
         this.countWin = 0;
         this.coin = 10000;
@@ -77,6 +80,8 @@ export class Game {
 
     _onClickContinue() {
         console.log("continue clicked");
+        this.audio.soundtrack().load();
+        this.audio.soundtrack().play();
         this.continueButton.view.style.display = "none";
         this.coin = 4510;
         this.running = true;
@@ -113,6 +118,26 @@ export class Game {
             wrong: () => {
                 if (!this.wrong) this.wrong = new Audio('./assets/sounds/wrong.wav');
                 this.wrong.play();
+            },
+            shuffle: () => {
+                if (!this.shuffle) this.shuffle = new Audio('./assets/sounds/shuffle.mp3');
+                this.shuffle.load();
+                this.shuffle.play();
+            },
+            distribute: () => {
+                if (!this.distribute) this.distribute = new Audio('./assets/sounds/distribute.wav');
+                this.distribute.load();
+                this.distribute.play();
+            },
+            start: () => {
+                if (!this.start) this.start = new Audio('./assets/sounds/start.mp3');
+                this.start.play();
+            },
+            soundtrack: () => {
+                if (!this.soundtrack) this.soundtrack = new Audio('./assets/sounds/soundtrack.mp3');
+                this.soundtrack.volume = 0.2;
+                this.soundtrack.loop = true;
+                return this.soundtrack;
             }
         };
         return audio;
@@ -140,7 +165,7 @@ export class Game {
         resetButton.view.addEventListener("click", onClickReset);
         retryButton.view.addEventListener("click", onClickRetry);
         this.continueButton.view.addEventListener("click", onClickContinue);
-        game_window.view.addEventListener("click", this.audio.click());
+        game_window.view.addEventListener("click", this.audio.click);
 
         game_window.addChild(background);
         game_window.addChild(menu);
@@ -219,6 +244,8 @@ export class Game {
             let game_window = new Node();
             game_window.width = width;
             game_window.height = height;
+            game_window.x = 100;
+            game_window.y = 100;
             game_window.view.style.border = "2px solid black";
             return game_window;
         }
@@ -280,7 +307,7 @@ export class Game {
         this.retry = false;
 
         this.canClick = false;
-        let deck = new Deck(this.image);
+        let deck = new Deck(this.image, this.audio);
         function shuffleImage() {
             let array = ["./assets/images/circle.png",
                 "./assets/images/diamond.png",
@@ -306,20 +333,20 @@ export class Game {
             return shuffledArray;
         }
 
-        function Deck(image) {
+        function Deck(image, audio) {
             let deck = new Node();
             deck.x = 100;
             deck.y = 100;
             deck.width = 500;
             deck.height = 400;
-            addElement(image);
+            addElement(image, audio);
 
-            function addElement(image) {
+            function addElement(image, audio) {
                 let index = 0
                 for (let y = 0; y < 4; y++) {
                     for (let x = 0; x < 5; x++) {
                         let card = new Node();
-                        card.spreadDeck(x * 100, y * 100, index);
+                        card.spreadDeck(x * 100, y * 100, index, audio);
                         let sprite = new Sprite(image[index]);
                         card.addChild(sprite);
                         let cover = new Cover();
@@ -340,6 +367,8 @@ export class Game {
             element.view.addEventListener("click", _onClick);
         });
         setTimeout(() => this.canClick = true, 2500);
+        setTimeout(() => this.audio.start(), 5000);
+        setTimeout(() => this.audio.soundtrack().play(), 6500);
 
         return deck;
     }
@@ -408,8 +437,6 @@ export class Game {
         this.score = this.scoreBoard.children[1];
         this.change = this.scoreBoard.children[2];
         this.score.string = this.coin;
-        console.log(this.coin);
-        console.log(this.score);
         if (this.coin <= 0) {
             this._lose();
             return null;
@@ -445,6 +472,7 @@ export class Game {
     _lose() {
         this.audio.lose();
         this.deck.disappear();
+        this.audio.soundtrack().pause();
         setTimeout(() => {
             this.score.string = "GAME OVER !!!";
             this.score.view.style.fontSize = "60px";
@@ -474,6 +502,7 @@ export class Game {
     _win() {
         this.audio.win();
         this.deck.disappear();
+        this.audio.soundtrack().pause();
         setTimeout(() => {
             this.score.string = "YOUR SCORE: " + this.coin + "!!!";
             this.score.view.style.fontSize = "45px";

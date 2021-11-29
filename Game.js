@@ -10,7 +10,7 @@ export class Game {
         this.running = false;
         this.retry = false;
         this.reset = false;
-        this.coin = 500;
+        this.coin = 10000;
         this.firstCard = null;
         this.secondCard = null;
         this.canClick = true;

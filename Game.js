@@ -10,7 +10,7 @@ export class Game {
         this.running = false;
         this.retry = false;
         this.reset = false;
-        this.coin = 10000;
+        this.coin = 500;
         this.firstCard = null;
         this.secondCard = null;
         this.canClick = true;
@@ -28,6 +28,7 @@ export class Game {
         this.scoreBoard = this._scoreBoardInit();
         this.gameWindow.addChild(this.deck);
         this.gameWindow.addChild(this.scoreBoard);
+        console.log(this.gameWindow);
         this.started = true;
         return null;
     }
@@ -35,6 +36,7 @@ export class Game {
     _onClickReset() {
         this.coin = 10000;
         this.countWin = 0;
+        this.continueButton.view.style.display = "none";
         if (this.running) this.deck.disappear();
         this.deck = null;
         this.scoreBoard.disappear();
@@ -47,6 +49,7 @@ export class Game {
         this.running = true;
         this.canClick = true;
         this.reset = true;
+        this.firstCard = null;
         this.retry = false;
         return null;
     }
@@ -55,6 +58,7 @@ export class Game {
         this.retry = true;
         this.countWin = 0;
         this.coin = 10000;
+        this.continueButton.view.style.display = "none";
         if (this.running) this.deck.disappear();
         this.deck = null;
         this.scoreBoard.disappear();
@@ -66,7 +70,25 @@ export class Game {
         this.gameWindow.addChild(this.scoreBoard);
         this.running = true;
         this.canClick = true;
+        this.firstCard = null;
         this.reset = true;
+        return null;
+    }
+
+    _onClickContinue() {
+        console.log("continue clicked");
+        this.continueButton.view.style.display = "none";
+        this.coin = 4510;
+        this.running = true;
+        this.deck.continue();
+        this.scoreBoard.disappear();
+        this.scoreBoard = null;
+        this.gameWindow.children.splice(4, 1);
+        console.log(this.gameWindow);
+        this.scoreBoard = this._scoreBoardInit();
+        this.gameWindow.addChild(this.scoreBoard);
+        this.canClick = true;
+        this.retry = false;
         return null;
     }
 
@@ -108,12 +130,16 @@ export class Game {
         let startButton = new Start();
         let resetButton = new Reset();
         let retryButton = new Retry();
+        this.continueButton = new Continue();
+
         let onClickStart = this._onClickStart.bind(this);
         let onClickReset = this._onClickReset.bind(this);
         let onClickRetry = this._onClickRetry.bind(this);
+        let onClickContinue = this._onClickContinue.bind(this);
         startButton.view.addEventListener("click", onClickStart);
         resetButton.view.addEventListener("click", onClickReset);
         retryButton.view.addEventListener("click", onClickRetry);
+        this.continueButton.view.addEventListener("click", onClickContinue);
         game_window.view.addEventListener("click", this.audio.click());
 
         game_window.addChild(background);
@@ -122,6 +148,7 @@ export class Game {
         menu.addChild(startButton);
         menu.addChild(resetButton);
         menu.addChild(retryButton);
+        menu.addChild(this.continueButton);
 
         function Title() {
             let title = new Label("TRUC XANH");
@@ -130,8 +157,6 @@ export class Game {
             title.y = 10;
             title.width = 500;
             title.height = 65;
-            // title.view.style.backgroundColor = "black";
-
             return title
         }
 
@@ -145,6 +170,17 @@ export class Game {
             return menu;
         }
 
+        function Continue() {
+            let continueButton = new Label("CONTINUE ?");
+            continueButton.y = 100;
+            continueButton.height = 50;
+            continueButton.width = 502;
+            continueButton.x = 0;
+            continueButton.view.style.backgroundColor = "black";
+            continueButton.view.style.fontSize = "45px";
+            continueButton.view.style.display = 'none';
+            return continueButton;
+        }
 
         function Start() {
             let startButton = new Label("START");
@@ -344,8 +380,8 @@ export class Game {
     _matchCard(firstCard, secondCard) {
         this.audio.correct();
         this.coin += 1000;
-        firstCard.disappear();
-        secondCard.disappear();
+        firstCard.disappear(false);
+        secondCard.disappear(false);
         this.countWin++;
         this._update(1000);
         setTimeout(() => this.canClick = true, 1000);
@@ -417,6 +453,7 @@ export class Game {
             this.text.string = "";
             let image = new Img();
             this.scoreBoard.addChild(image);
+            this.continueButton.view.style.display = "initial";
 
             function Img() {
                 let loseImage = new Sprite("./assets/images/fail.gif");

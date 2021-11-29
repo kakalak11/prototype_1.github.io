@@ -66,6 +66,10 @@ export class Node {
         this.view.style.display = "initial";
         return null;
     }
+    showAgain() {
+        if (this._active) this.view.style.display = "initial";
+        return null;
+    }
     show() {
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
         tl.to(this.view, { scaleX: 0, duration: 0.5, transformOrigin: '50px 50px' });
@@ -81,13 +85,24 @@ export class Node {
         tl.delay(0.5);
         return null;
     }
-    disappear() {
+    disappear(active = true) {
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
         tl.to(this.view, { opacity: 0, duration: 0.5 });
+        tl.add(() => this._active = active);
         tl.add(() => this.children.forEach(element => element.view.style.display = "none"));
         tl.delay(0.5);
         return null;
     }
+
+    continue() {
+        let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
+        tl.to(this.view, { opacity: 0, duration: 0 });
+        tl.add(() => this.children.forEach(element => element.showAgain()));
+        tl.to(this.view, { opacity: 1, duration: 1 });
+        tl.delay(0.5);
+        return null;
+    }
+
     spreadDeck(x, y, index) {
         let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
         tl.to(this.view, { x: 200, y: 150, opacity: 0, duration: 0 });
